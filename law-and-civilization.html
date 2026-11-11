@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-content-type" content="presentation" />
+<meta name="x-presentation-version" content="1.0" />
+<meta name="x-presentation-indicator" content="deck-stage .slide" />
+<title>法，何以成人 —— 法律的四重角色</title>
+<link rel="stylesheet" href="./_shared/fonts.css">
+<link rel="stylesheet" href="./_shared/base.css">
+<link id="theme-link" rel="stylesheet" href="./_shared/themes/law-parchment.css">
+<link rel="stylesheet" href="./_shared/animations/animations.css">
+<style>
+/* ===== 深色石质页（封面/章节页/金句页/结语） ===== */
+.dark-stone{
+  --bg:#17120E;
+  /* url() in custom properties would be resolved against _shared/base.css (consumed location) instead of this page,
+     Instead, explicitly write background on .dark-stone (resolves against the document), and remove the url from the custom property to avoid 404s */
+  --bg-texture:linear-gradient(rgba(20,15,11,.82),rgba(20,15,11,.94));
+  background:linear-gradient(rgba(20,15,11,.82),rgba(20,15,11,.94)),url('assets/stone_dark.jpg') center/cover no-repeat;
+  --text-1:#F3E9D5;--text-2:#C8B898;--text-3:#96866A;
+  --border:rgba(243,233,213,.16);--border-strong:rgba(243,233,213,.36);
+  --surface:rgba(243,233,213,.045);--surface-2:rgba(243,233,213,.09);
+  --accent:#C9A45C;--accent-2:#C9684B;
+}
+.dark-stone .card{background:rgba(243,233,213,.05);border-color:rgba(243,233,213,.16)}
+.dark-stone .kicker{color:#C9A45C}
+.dark-stone .divider-accent{background:#C9A45C}
+.dark-stone .eyebrow{color:#96866A}
+
+/* ===== 翻转卡片（思想实验） ===== */
+.flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+.flip{perspective:1500px;height:360px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.75,.25,1)}
+.flip.on .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:36px 32px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid var(--border-strong);background:var(--surface);box-shadow:var(--shadow)}
+.flip-face .qno{font-family:var(--font-serif);font-size:20px;color:var(--text-3);letter-spacing:.3em;margin-bottom:20px}
+.flip-face .qtext{font-family:var(--font-display);font-size:36px;font-weight:600;line-height:1.35;color:var(--text-1)}
+.flip-face .qhint{margin-top:26px;font-size:13px;color:var(--text-3);letter-spacing:.1em}
+.flip-back{transform:rotateY(180deg);background:var(--accent-2);border-color:var(--accent-2)}
+.flip-back .qno,.flip-back .qhint{color:rgba(247,241,227,.72)}
+.flip-back .qtext{color:#F7F1E3;font-size:26px;font-weight:500}
+
+/* ===== 交互时间轴（第5页） ===== */
+.itl{display:flex;justify-content:space-between;align-items:flex-start;margin-top:54px;position:relative;padding:0 8px}
+.itl::before{content:"";position:absolute;left:0;right:0;top:11px;height:2px;background:var(--border-strong)}
+.itl-node{position:relative;z-index:1;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-2);font-family:var(--font-mono);font-size:15px;font-weight:600;padding:10px 16px;cursor:pointer;transition:all .25s var(--ease);letter-spacing:.02em}
+.itl-node:hover{transform:translateY(-3px)}
+.itl-node.china{border-style:solid;border-color:var(--accent-2);color:var(--accent-2)}
+.itl-node.on{background:var(--accent-2);border-color:var(--accent-2);color:#F7F1E3;box-shadow:var(--shadow-lg)}
+.itl-detail{margin-top:40px;padding:34px 40px;border-left:4px solid var(--accent-2)}
+.itl-detail .d-year{font-family:var(--font-mono);font-size:15px;color:var(--accent-2);font-weight:700;letter-spacing:.1em}
+.itl-detail h3{font-family:var(--font-display);font-size:34px;margin:8px 0 10px}
+.itl-detail p{font-size:17px;color:var(--text-2);margin:0;max-width:72ch}
+.itl-legend{margin-top:22px;font-size:13px;color:var(--text-3)}
+
+/* ===== 复仇循环 ===== */
+.cycle-flow{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:36px}
+.cf-node{border:1px solid var(--border-strong);background:var(--surface);padding:18px 26px;font-family:var(--font-display);font-size:23px;font-weight:600;color:var(--text-1);box-shadow:var(--shadow)}
+.cf-node.bad{border-color:var(--bad);color:var(--bad)}
+.cf-arrow{font-size:26px;color:var(--text-3)}
+.cf-inf{font-size:34px;color:var(--bad);border-style:dashed}
+
+/* ===== 大数字 ===== */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:26px;margin-top:34px}
+.stat{padding-top:18px;border-top:3px solid var(--border-strong)}
+.stat.accent{border-top-color:var(--accent-2)}
+.stat.accent .stat-n{color:var(--accent-2)}
+.stat .stat-n{font-family:var(--font-display);font-size:66px;font-weight:700;line-height:.95;font-variant-numeric:tabular-nums}
+.stat .stat-n .u{font-size:22px;font-weight:400;opacity:.55;margin-left:4px}
+.stat .stat-l{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-top:10px}
+.stat .stat-d{font-size:14px;color:var(--text-2);margin-top:6px;line-height:1.55}
+
+/* ===== 角色标签 ===== */
+.role-tag{display:inline-flex;align-items:center;justify-content:center;min-width:64px;padding:6px 14px;background:var(--accent-2);color:#F7F1E3;font-size:14px;font-weight:700;letter-spacing:.14em;border-radius:2px}
+.role-tag.gold{background:var(--accent);color:#FBF7ED}
+
+/* ===== 主题金句块 ===== */
+.gold-quote{font-family:var(--font-display);font-style:italic;font-weight:600;font-size:52px;line-height:1.4;color:var(--text-1);margin:0}
+.dark-stone .gold-quote{color:#F3E9D5}
+
+/* ===== 操作提示 ===== */
+.hud-hint{position:fixed;right:18px;bottom:16px;z-index:30;font-size:11px;color:var(--text-3);opacity:.55;letter-spacing:.08em;pointer-events:none;font-family:var(--font-sans)}
+.img-frame{border:1px solid var(--border-strong);padding:10px;background:var(--surface);box-shadow:var(--shadow-lg)}
+.img-frame img{width:100%;height:auto;display:block}
+.img-cap{font-size:12px;color:var(--text-3);margin-top:10px;text-align:center;letter-spacing:.06em}
+.src-note{font-size:12px;color:var(--text-3);margin-top:auto;padding-top:16px;letter-spacing:.02em}
+.two-col{display:grid;grid-template-columns:5fr 6fr;gap:56px;align-items:start;margin-top:8px}
+.foot-line{margin-top:auto;padding-top:22px;border-top:1px solid var(--border);font-size:19px;color:var(--text-1);font-weight:500}
+.foot-line b{color:var(--accent-2)}
+
+/* ════════ 高级感升级层 · 微交互与质感（仅作用于 .slide 子元素 / 独立 fixed 层） ════════ */
+
+/* · U1 · 开场幕布 Preloader */
+#preloader{position:fixed;inset:0;z-index:9999;background:#0E0B08;display:flex;flex-direction:column;align-items:center;justify-content:center;clip-path:inset(0 0 0 0);transition:clip-path .6s cubic-bezier(.7,0,.2,1)}
+#preloader::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(115% 90% at 50% 42%,transparent 42%,rgba(0,0,0,.5) 100%)}
+#preloader.exit{clip-path:inset(0 0 100% 0);pointer-events:none}
+.pl-title{display:flex;gap:.06em;font-family:var(--font-serif);font-size:clamp(72px,9.5vw,128px);font-weight:600;color:#F3E9D5;line-height:1.15;margin:0}
+.pl-title span{opacity:0;filter:blur(14px);animation:pl-char .75s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,.05s)}
+@keyframes pl-char{from{opacity:0;filter:blur(14px);transform:translateY(12px)}to{opacity:1;filter:blur(0);transform:none}}
+.pl-line{height:1px;width:0;margin-top:36px;background:linear-gradient(90deg,transparent,#C9A45C 30%,#C9A45C 70%,transparent);animation:pl-line .9s cubic-bezier(.2,.7,.2,1) .5s forwards}
+@keyframes pl-line{to{width:min(540px,66vw)}}
+.pl-sub{margin:28px 0 0;font-size:15px;font-weight:500;letter-spacing:.58em;margin-right:-.58em;color:#A98F5F;opacity:0;animation:pl-sub .5s ease-out 1.2s forwards}
+@keyframes pl-sub{to{opacity:.92}}
+
+/* · U2 · 双层自定义光标 */
+#cursor-dot,#cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:10000;opacity:0;transition:opacity .3s ease;will-change:transform}
+body.cur-in #cursor-dot,body.cur-in #cursor-ring{opacity:1}
+#cursor-dot{width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#B08938;box-shadow:0 0 0 1px rgba(36,28,16,.25)}
+#cursor-ring{width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1.5px solid rgba(176,137,56,.6);transition:opacity .3s ease,width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),border-color .3s ease}
+#cursor-ring.hov{width:54px;height:54px;margin:-27px 0 0 -27px;border-color:#7A2E22}
+body.on-dark #cursor-dot{background:#C9A45C;box-shadow:0 0 6px rgba(201,164,92,.5)}
+body.on-dark #cursor-ring{border-color:rgba(201,164,92,.85)}
+body.deck-editing #cursor-dot,body.deck-editing #cursor-ring{display:none}
+@media (hover:hover) and (pointer:fine){ body:not(.deck-editing) *{cursor:none!important} }
+@media (hover:none),(pointer:coarse){ #cursor-dot,#cursor-ring{display:none!important} }
+
+/* · U4 · 章节大标题 / 金句 逐字对焦 */
+.fw-ch{display:inline-block}
+.fw-play .fw-ch{opacity:0;animation:fw-ch-in .7s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0ms)}
+@keyframes fw-ch-in{from{opacity:0;filter:blur(12px);transform:translateY(8px)}to{opacity:1;filter:blur(0);transform:none}}
+
+/* · U7 · 卡片扫光 */
+.card-hover{position:relative}
+.card-hover::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;background:linear-gradient(105deg,transparent 42%,rgba(201,164,92,.18) 50%,transparent 58%);background-size:300% 100%;background-position:100% 0;transition:background-position .9s cubic-bezier(.2,.7,.2,1),opacity .35s ease}
+.card-hover:hover::after{opacity:1;background-position:0% 0}
+
+/* · U8 · 谢谢页片尾字幕 */
+.credits-roll{position:absolute;left:0;right:0;bottom:54px;height:132px;overflow:hidden;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,transparent,#000 34%,#000 78%,transparent);mask-image:linear-gradient(180deg,transparent,#000 34%,#000 78%,transparent)}
+.credits-track{display:flex;flex-direction:column;align-items:center;animation:credits-up 42s linear infinite}
+.credits-track span{display:block;white-space:nowrap;font-family:var(--font-sans);font-size:14px;letter-spacing:.26em;color:#96866A;margin-bottom:16px}
+.credits-track .cr-d{color:rgba(201,164,92,.75);font-size:9px;margin:-9px 0 16px}
+@keyframes credits-up{to{transform:translateY(-50%)}}
+
+/* · U9 · 顶部章节指示器 */
+#chapter-hud{position:fixed;left:22px;top:15px;z-index:30;pointer-events:none;font-family:var(--font-sans);font-size:12px;font-weight:600;letter-spacing:.22em;color:#8A6A1F;opacity:0;transition:opacity .35s var(--ease)}
+#chapter-hud.show{opacity:.85}
+#chapter-hud.on-dark{color:#C9A45C}
+
+/* · U10 · 防孤行与文字安全 */
+h1,h2,h3,h4,.gold-quote,.lede{text-wrap:balance}
+p,li,.dim{text-wrap:pretty}
+*{overflow-wrap:break-word}
+
+/* 打印与减弱动效兜底 */
+@media print{#preloader,#cursor-dot,#cursor-ring,#chapter-hud{display:none!important}}
+@media (prefers-reduced-motion:reduce){
+  #preloader{transition:none}
+  .pl-title span,.pl-line,.pl-sub{animation-duration:.01s!important;animation-delay:0s!important}
+  .fw-play .fw-ch{animation:none!important;opacity:1!important}
+  .credits-track{animation:none}
+  .card-hover::after{transition:none}
+}
+</style>
+</head>
+<body data-themes="law-parchment,luxury-noir,crimson-night,academic-paper" data-theme-base="./_shared/themes/">
+<div id="preloader" aria-hidden="true">
+  <div class="pl-title" role="heading" aria-label="法，何以成人"><span style="--d:.05s">法</span><span style="--d:.2s">，</span><span style="--d:.35s">何</span><span style="--d:.5s">以</span><span style="--d:.65s">成</span><span style="--d:.8s">人</span></div>
+  <div class="pl-line"></div>
+  <div class="pl-sub">秩序 · 限权 · 权利 · 文明</div>
+</div>
+<deck-stage width="1920" height="1080">
+
+<!-- ═══ 1 · 封面 ═══ -->
+<section class="slide dark-stone" data-deck-label="封面 · 法，何以成人" style="padding:0">
+  <div class="cover-bg"><img src="assets/cover_bg.jpg" alt="汉谟拉比石碑"></div>
+  <div class="cover-scrim" style="background:linear-gradient(100deg,rgba(14,11,8,.9) 0%,rgba(14,11,8,.62) 52%,rgba(14,11,8,.18) 100%)"></div>
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:1;pointer-events:none" aria-hidden="true"></div>
+  <div class="cover-content">
+    <div class="deck-header"><span class="eyebrow">GROUP REPORT · LAW &amp; CIVILIZATION</span><span class="eyebrow">2026</span></div>
+    <div class="anim-blur-in" data-anim="blur-in" style="margin-top:auto;margin-bottom:auto">
+      <p class="kicker" style="color:#C9A45C;letter-spacing:.28em">从汉谟拉比，到民法典</p>
+      <h1 class="h1" style="color:#F7F1E3;font-size:118px;font-weight:600;margin:22px 0 10px">法，何以成人</h1>
+      <p class="serif" style="color:#C9A45C;font-size:32px;margin:0 0 34px;font-style:italic">法律在人类发展史上的四重角色</p>
+      <p class="lede" style="color:rgba(243,233,213,.85);max-width:52ch">从石头的判决，到每个人的权利——人类为什么离不开法律？</p>
+      <div class="row" style="gap:14px;margin-top:40px">
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">秩序</span>
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">限权</span>
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">权利</span>
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">文明</span>
+      </div>
+    </div>
+    <div class="deck-footer" style="color:rgba(243,233,213,.7)">
+      <span>第8组 · 林芷洲 房芊桐 朱依依 粟红玲 曾诗兰 宋羽淇 柳胤舟</span>
+      <span class="slide-number"></span>
+    </div>
+  </div>
+  <div class="notes">【00:15｜开场】各位老师、同学，大家好。我们小组汇报的题目是《法，何以成人》。接下来25分钟，我们想回答一个问题：人类为什么离不开法律？</div>
+</section>
+
+<!-- ═══ 2 · 思想实验（翻转卡片） ═══ -->
+<section class="slide" data-deck-label="思想实验 · 如果法律消失">
+  <p class="kicker">A THOUGHT EXPERIMENT · 思想实验</p>
+  <h2 class="h2">如果明天，法律突然消失——</h2>
+  <div class="flip-grid">
+    <div class="flip" title="点击翻面">
+      <div class="flip-inner">
+        <div class="flip-face"><div class="qno">01</div><div class="qtext">合同，<br>还算数吗？</div><div class="qhint">点击翻面 →</div></div>
+        <div class="flip-face flip-back"><div class="qno">答案</div><div class="qtext">不再算数。履行只靠自觉，违约没有救济，交易退回“一手交钱、一手交货”。</div></div>
+      </div>
+    </div>
+    <div class="flip" title="点击翻面">
+      <div class="flip-inner">
+        <div class="flip-face"><div class="qno">02</div><div class="qtext">权力，<br>向谁负责？</div><div class="qhint">点击翻面 →</div></div>
+        <div class="flip-face flip-back"><div class="qno">答案</div><div class="qtext">无从追问。没有程序与监督，权力的边界由掌权者的心情决定。</div></div>
+      </div>
+    </div>
+    <div class="flip" title="点击翻面">
+      <div class="flip-inner">
+        <div class="flip-face"><div class="qno">03</div><div class="qtext">被伤害的人，<br>去哪里说理？</div><div class="qhint">点击翻面 →</div></div>
+        <div class="flip-face flip-back"><div class="qno">答案</div><div class="qtext">只能私力救济。以暴制暴，冲突跨代延续，没有终点。</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot-line">我们习以为常的日常，其实站在一套<b>看不见的规则</b>之上。</div>
+  <div class="deck-footer"><span class="dim2">法，何以成人 · 思想实验</span><span class="slide-number"></span></div>
+  <div class="notes">【00:35｜问题】先做一个思想实验：如果明天，法律突然消失，会发生什么？合同不再算数，权力不再需要解释，受害者只能自己讨回公道。我们习以为常的日常，其实站在一套看不见的规则之上。</div>
+</section>
+
+<!-- ═══ 3 · 两种直觉 ═══ -->
+<section class="slide" data-deck-label="两种直觉 · 枷锁还是工具">
+  <p class="kicker">TWO INTUITIONS · 两种直觉</p>
+  <h2 class="h2">法律，是枷锁，还是工具？</h2>
+  <div class="vs">
+    <div class="card bad-side side anim-fade-left" data-anim="fade-left">
+      <h3>直觉一 · 枷锁</h3>
+      <p class="serif" style="font-size:24px;font-style:italic;color:var(--text-1);line-height:1.5">“法律限制我，所以它是外在于我的力量。”</p>
+      <p class="dim" style="font-size:16px">→ 只看到约束，看不到保护</p>
+    </div>
+    <div class="mid">？</div>
+    <div class="card bad-side side anim-fade-right" data-anim="fade-right">
+      <h3>直觉二 · 工具</h3>
+      <p class="serif" style="font-size:24px;font-style:italic;color:var(--text-1);line-height:1.5">“法律服务统治者，所以谁掌权，法就朝谁倾斜。”</p>
+      <p class="dim" style="font-size:16px">→ 只看到权力，看不到规则</p>
+    </div>
+  </div>
+  <div class="foot-line">两种说法都看到了部分真相，却都把法律看成了“外物”。换一个视角：<b>法律，是人类为自己发明的一套文明技术。</b></div>
+  <div class="deck-footer"><span class="dim2">法，何以成人 · 破题</span><span class="slide-number"></span></div>
+  <div class="notes">【00:40｜破题】对法律，人们有两种直觉。一种说它是枷锁，限制我的自由；另一种说它是工具，谁掌权就为谁服务。这两种说法都看到了部分真相，但都把法律看成了外在于我们的东西。我们想换一个视角：法律是人类为自己发明的一套文明技术。</div>
+</section>
+
+<!-- ═══ 4 · 核心论点 ═══ -->
+<section class="slide" data-deck-label="核心论点 · 四重角色层层递进">
+  <p class="kicker">THE THESIS · 核心论点</p>
+  <h2 class="h2">四重角色，层层递进 <span class="dim2" style="font-size:22px;font-weight:400">文明程度 →</span></h2>
+  <p class="lede">法律不是一条条孤立的规则，而是一套不断升级的文明技术。</p>
+  <div class="steps" style="margin-top:44px">
+    <div class="step card-hover"><div class="num">01</div><h4>秩序的奠基者</h4><p>让共存成为可能</p><span class="tag">定分止争 · 规则公开</span></div>
+    <div class="step card-hover"><div class="num">02</div><h4>权力的约束者</h4><p>让治理可以信任</p><span class="tag">王在法下 · 权力可问责</span></div>
+    <div class="step card-hover"><div class="num">03</div><h4>权利的保障者</h4><p>让个人拥有尊严</p><span class="tag">从身份到契约 · 人之为人</span></div>
+    <div class="step card-hover"><div class="num">04</div><h4>文明的推动者</h4><p>让合作跨越陌生人</p><span class="tag">商法 · 国际法 · 人权法</span></div>
+  </div>
+  <div class="foot-line">不是四种版本，而是<b>四次升级</b>：先能共存，才谈得上尊严与文明。</div>
+  <div class="deck-footer"><span class="dim2">法，何以成人 · 总论点</span><span class="slide-number"></span></div>
+  <div class="notes">【00:50｜总论点】这套技术，在历史上长出了四重角色：秩序的奠基者、权力的约束者、权利的保障者、文明的推动者。它们不是四种版本，而是四次升级：先能共存，才谈得上治理；治理可信任，才谈得上尊严；人有尊严，才谈得上文明。</div>
+</section>
+
+<!-- ═══ 5 · 时间轴（交互） ═══ -->
+<section class="slide" data-deck-label="长时段 · 近四千年九个坐标">
+  <p class="kicker">A LONGUE DURÉE · 长时段</p>
+  <h2 class="h2">近四千年，九个坐标 <span class="dim2" style="font-size:22px;font-weight:400">点击年份查看详情</span></h2>
+  <div class="itl">
+    <button class="itl-node on" data-y="前1754" data-k="世界" data-t="汉谟拉比法典" data-d="282条判决，刻上2.25米高的黑色玄武岩，立于公共空间。规则第一次以公共文本的形式，站在所有人面前。">前1754</button>
+    <button class="itl-node china" data-y="前536" data-k="中国" data-t="子产铸刑书" data-d="郑国执政子产把刑法铸在鼎上，公之于众。叔向反对：“民知有辟，则不忌于上。”但公开的脚步没有停下。">前536</button>
+    <button class="itl-node" data-y="前450" data-k="世界" data-t="十二铜表法" data-d="罗马第一部成文法。相传铸于青铜，公布于罗马广场——法律走出贵族的密室。">前450</button>
+    <button class="itl-node china" data-y="前356" data-k="中国" data-t="商鞅徙木立信" data-d="谁能把南门之木搬到北门，赏五十金。他立的不是木头，是法令的分量。">前356</button>
+    <button class="itl-node china" data-y="653" data-k="中国" data-t="唐律疏议" data-d="礼法并用的中华法系巅峰之作，其体系化程度深刻影响了东亚千余年的法制传统。">653</button>
+    <button class="itl-node" data-y="1215" data-k="世界" data-t="大宪章" data-d="英王约翰在兰尼米德盖印确认。王权第一次受契约约束，正当程序由此萌芽。">1215</button>
+    <button class="itl-node" data-y="1804" data-k="世界" data-t="法国民法典" data-d="2281条，把大革命的原则变成可操作的技术——从身份到契约。">1804</button>
+    <button class="itl-node" data-y="1948" data-k="世界" data-t="世界人权宣言" data-d="30条。人人生而自由，在尊严和权利上一律平等。中国代表张彭春参与起草。">1948</button>
+    <button class="itl-node china" data-y="2020" data-k="中国" data-t="中国民法典" data-d="7编1260条，人格权独立成编。中国法治文明与世界同频共振的最新坐标。">2020</button>
+  </div>
+  <div class="itl-legend"><span class="role-tag" style="min-width:auto;padding:3px 10px;font-size:11px">■ 世界坐标</span>&nbsp;&nbsp;<span class="role-tag gold" style="min-width:auto;padding:3px 10px;font-size:11px">■ 中国线索</span></div>
+  <div class="itl-detail card anim-fade-up" data-anim="fade-up">
+    <span class="d-year" id="itl-kind">世界坐标 · 前1754</span>
+    <h3 id="itl-title">汉谟拉比法典</h3>
+    <p id="itl-desc">282条判决，刻上2.25米高的黑色玄武岩，立于公共空间。规则第一次以公共文本的形式，站在所有人面前。</p>
+  </div>
+  <div class="foot-line">公开、信守、体系化——中国法治传统与人类法治文明同频共振。每一次跃迁，都是把<b>“人”重新放回中心</b>。</div>
+  <div class="deck-footer"><span class="dim2">法，何以成人 · 时间轴</span><span class="slide-number"></span></div>
+  <div class="notes">【00:40｜时间轴】这不是一条直线，而是九个坐标：汉谟拉比法典、子产铸刑书、十二铜表法、商鞅徙木立信、唐律疏议、大宪章、法国民法典、世界人权宣言、中国民法典。中国不是旁观者，我们和世界一起，在回答同一个问题：如何让共同生活成为可能。</div>
+</section>
+
+<!-- ═══ 6 · PART 01 章节页 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="PART 01 · 秩序的奠基者">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div class="anim-rise-in" data-anim="rise-in">
+    <p class="kicker" style="letter-spacing:.3em">PART 01 · ORDER · 3 MIN</p>
+    <h1 class="h1" style="font-size:96px;font-weight:600;margin:18px 0">01 · 秩序的奠基者</h1>
+    <div class="divider-accent" style="margin:26px auto"></div>
+    <p class="lede" style="margin:0 auto;color:var(--text-2)">定分止争：把私斗，变成公共裁判</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">法，何以成人</span><span class="slide-number"></span></div>
+  <div class="notes">【00:08｜转场】第一幕，秩序的奠基者。</div>
+</section>
+
+<!-- ═══ 7 · 私斗的逻辑 ═══ -->
+<section class="slide" data-deck-label="私斗的逻辑 · 复仇没有终点">
+  <p class="kicker">01 · ORDER</p>
+  <h2 class="h2">私斗的逻辑：复仇没有终点</h2>
+  <div class="cycle-flow">
+    <div class="cf-node">A 伤害 B</div><span class="cf-arrow">→</span>
+    <div class="cf-node bad">B 报复 A</div><span class="cf-arrow">→</span>
+    <div class="cf-node">A′ 再报复</div><span class="cf-arrow">→</span>
+    <div class="cf-node bad">B′ 再报复</div><span class="cf-arrow">→</span>
+    <div class="cf-node cf-inf">∞</div>
+  </div>
+  <p class="tc dim" style="font-size:16px;margin-top:18px">没有停止键的冲突，会自己长出下一代。</p>
+  <div class="grid g3" style="margin-top:30px">
+    <div class="card card-accent"><span class="role-tag" style="margin-bottom:14px">缺口 01</span><h4>没有中立裁判</h4><p class="dim">每一次伤害，都会召唤下一次伤害。</p></div>
+    <div class="card card-accent"><span class="role-tag" style="margin-bottom:14px">缺口 02</span><h4>没有公开规则</h4><p class="dim">强弱，而不是是非，决定结果。</p></div>
+    <div class="card card-accent"><span class="role-tag" style="margin-bottom:14px">缺口 03</span><h4>没有终局判决</h4><p class="dim">冲突会跨代延续，直到一方消失。</p></div>
+  </div>
+  <div class="foot-line">秩序的第一个敌人，不是“坏人”，而是<b>“没有停止键”</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 01 · 秩序</span><span class="slide-number"></span></div>
+  <div class="notes">【00:27｜困境】秩序的第一个敌人，不是坏人，而是复仇没有停止键。没有中立裁判，每一次伤害都会召唤下一次伤害；没有公开规则，强弱而不是是非决定结果；没有终局判决，冲突会跨代延续。</div>
+</section>
+
+<!-- ═══ 8 · 汉谟拉比 ═══ -->
+<section class="slide" data-deck-label="汉谟拉比 · 把判决刻到石头上">
+  <p class="kicker">01 · ORDER</p>
+  <h2 class="h2">汉谟拉比：把判决刻到石头上</h2>
+  <div class="two-col">
+    <div>
+      <div class="img-frame" style="max-width:430px"><img src="assets/hammurabi.jpg" alt="汉谟拉比法典石碑"><div class="img-cap">卢浮宫藏 · 黑色玄武岩</div></div>
+    </div>
+    <div>
+      <p class="lede" style="font-size:19px">刻的不是抽象哲学，而是 282 个<b>“如果—那么”</b>。它把君主的判断，变成人人可读、可引用的公共文本。</p>
+      <div class="stat-row">
+        <div class="stat accent"><div class="stat-n">2.25<span class="u">m</span></div><div class="stat-l">石碑高度</div></div>
+        <div class="stat accent"><div class="stat-n">282<span class="u">条</span></div><div class="stat-l">现存条文</div></div>
+        <div class="stat accent"><div class="stat-n">前1750</div><div class="stat-l">雕刻年代</div></div>
+      </div>
+      <div class="grid g3" style="margin-top:32px;gap:18px">
+        <div><h4>公开</h4><p class="dim" style="font-size:14px">石碑立于公共空间，规则从“密室”走向“广场”</p></div>
+        <div><h4>标准化</h4><p class="dim" style="font-size:14px">同态复仇，给无限报复装上“停止键”</p></div>
+        <div><h4>可预期</h4><p class="dim" style="font-size:14px">“如果—那么”，让后果先于行为发生</p></div>
+      </div>
+      <p class="src-note">资料来源：卢浮宫《汉谟拉比法典》专题页</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 01 · 秩序</span><span class="slide-number"></span></div>
+  <div class="notes">【00:30｜汉谟拉比】公元前1750年前后，巴比伦国王汉谟拉比把282条判决刻在一块2.25米高的黑色玄武岩上。它不是在讲抽象哲学，而是在说：如果发生这种事，就那样处理。规则第一次以公共文本的形式，站在所有人面前。</div>
+</section>
+
+<!-- ═══ 9 · 以眼还眼 ═══ -->
+<section class="slide" data-deck-label="从复仇到相称 · 第196条">
+  <p class="kicker">01 · ORDER</p>
+  <h2 class="h2">从“复仇”到“相称”</h2>
+  <div class="grid g2" style="margin-top:36px;align-items:start">
+    <div class="card" style="border-left:4px solid var(--accent-2);padding:40px">
+      <p class="pill pill-accent" style="margin:0 0 18px">第 196 条</p>
+      <p class="gold-quote" style="font-size:38px">“如果一个人刺瞎了地位相同者的一只眼，就应刺瞎他的一只眼。”</p>
+    </div>
+    <div class="stack" style="padding-top:6px">
+      <p style="font-size:19px;line-height:1.7;color:var(--text-2)">它常被误读为<b style="color:var(--text-1)">野蛮</b>。其实，它是在说：<b style="color:var(--accent-2)">惩罚不能超过伤害</b>——这是从“无限复仇”到“有限报复”的一步。</p>
+      <p style="font-size:19px;line-height:1.7;color:var(--text-2)">但“地位相同者”四个字，也暴露了它的限度：不同等级的人，代价并不一样。</p>
+      <div class="foot-line" style="margin-top:20px;padding-top:18px">秩序建立了，但<b>正义还没有完成</b>。</div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 01 · 秩序</span><span class="slide-number"></span></div>
+  <div class="notes">【00:38｜相称】“以眼还眼”常被当成野蛮的象征。但放在当时，它其实是在给复仇设上限：你最多只能造成与伤害相称的后果。当然，它也有历史的限度：条文里写着“地位相同者”，不同等级的人，代价并不一样。秩序建立了，但正义还没有完成。</div>
+</section>
+
+<!-- ═══ 10 · 十二铜表法 ═══ -->
+<section class="slide" data-deck-label="十二铜表法 · 法律走出密室">
+  <p class="kicker">01 · ORDER</p>
+  <h2 class="h2">十二铜表法：法律走出贵族的密室</h2>
+  <p class="lede">前451—前450年，平民与贵族的斗争，催生了罗马第一部成文法。</p>
+  <div class="steps" style="margin-top:40px">
+    <div class="step card-hover"><div class="num">01</div><h4>公开</h4><p>相传铸于青铜，公布于罗马广场</p></div>
+    <div class="step card-hover"><div class="num">02</div><h4>争权</h4><p>打破贵族对法律解释权的垄断</p></div>
+    <div class="step card-hover"><div class="num">03</div><h4>说理</h4><p>平民第一次可以拿着条文说理</p></div>
+  </div>
+  <div class="card" style="margin-top:42px;border-left:4px solid var(--accent);max-width:900px">
+    <p class="serif" style="font-size:24px;font-style:italic;margin:0">“有了成文法典，他们就不再依靠贵族的记忆力。”</p>
+  </div>
+  <div class="foot-line">公开，是限权的第一步；也是<b>平民的第一件武器</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 01 · 秩序</span><span class="slide-number"></span></div>
+  <div class="notes">【00:28｜十二铜表法】又过了三百年，罗马平民和贵族的斗争，催生了《十二铜表法》。相传它铸在青铜上，公布在罗马广场。它最重要的贡献不是条文有多完美，而是“公开”：法律走出贵族的密室，平民第一次可以拿着条文说理。</div>
+</section>
+
+<!-- ═══ 11 · 中国线索 ═══ -->
+<section class="slide" data-deck-label="中国线索 · 铸刑书 徙木立信">
+  <p class="kicker">01 · ORDER</p>
+  <h2 class="h2">中国线索：铸刑书，徙木立信</h2>
+  <div class="grid g2" style="margin-top:36px">
+    <div class="card card-accent" style="padding:34px">
+      <span class="role-tag" style="margin-bottom:16px">前 536</span>
+      <h3>子产铸刑书</h3>
+      <p class="dim" style="font-size:17px;line-height:1.7">把刑法铸在鼎上，公之于众。叔向反对：“民知有辟，则不忌于上。”但公开的脚步没有停下。</p>
+    </div>
+    <div class="card card-accent" style="padding:34px">
+      <span class="role-tag" style="margin-bottom:16px">前 356</span>
+      <h3>商鞅徙木立信</h3>
+      <p class="dim" style="font-size:17px;line-height:1.7">谁能把南门之木搬到北门，赏五十金。他立的不是木头，是法令的分量。</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:34px;border-left:4px solid var(--accent)">
+    <p class="serif" style="font-size:22px;font-style:italic;margin:0">“法者，编著之图籍，设之于官府，而布之于百姓者也。”<span class="dim2" style="font-size:15px;font-style:normal">　——《韩非子·难三》</span></p>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 01 · 秩序</span><span class="slide-number"></span></div>
+  <div class="notes">【00:29｜中国线索】中国也有自己的线索。公元前536年，子产把刑法铸在鼎上，公之于众。叔向反对，说“民知有辟，则不忌于上”。但公开的脚步没有停下。公元前356年，商鞅徙木立信：谁能把南门之木搬到北门，赏五十金。他立的不是木头，是法令的分量。</div>
+</section>
+
+<!-- ═══ 12 · 秩序小结 ═══ -->
+<section class="slide" data-deck-label="秩序小结 · 不是服从而是可预期">
+  <p class="kicker">01 · ORDER · 小结</p>
+  <h2 class="h2">秩序，不是服从，而是可预期</h2>
+  <div class="grid g3" style="margin-top:44px">
+    <div class="card center tc" style="padding:44px 30px"><div class="serif" style="font-size:88px;font-weight:700;color:var(--accent-2);line-height:1">公</div><h4 style="margin-top:16px">规则公开</h4><p class="dim" style="font-size:15px">知道什么能做、什么不能做</p></div>
+    <div class="card center tc" style="padding:44px 30px"><div class="serif" style="font-size:88px;font-weight:700;color:var(--accent-2);line-height:1">中</div><h4 style="margin-top:16px">裁判居中</h4><p class="dim" style="font-size:15px">不是谁强谁有理，而是谁有理谁赢</p></div>
+    <div class="card center tc" style="padding:44px 30px"><div class="serif" style="font-size:88px;font-weight:700;color:var(--accent-2);line-height:1">稳</div><h4 style="margin-top:16px">结果可预期</h4><p class="dim" style="font-size:15px">同样的行为，得到同样的后果</p></div>
+  </div>
+  <p class="tc" style="font-size:24px;margin-top:42px;font-weight:600">秩序 = 公开的规则 <span class="dim2">×</span> 中立的裁判 <span class="dim2">×</span> 稳定的预期</p>
+  <div class="foot-line">三者缺一，秩序就会退化为服从，或者退回私斗。法律的第一重角色，是<b>让人群先能够共存</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 01 · 秩序</span><span class="slide-number"></span></div>
+  <div class="notes">【00:20｜小结】所以，秩序不是服从，而是可预期。公开的规则，中立的裁判，稳定的后果——三者相乘，才让陌生人敢于一起做事。这是法律的第一重角色：先让人群能够共存。</div>
+</section>
+
+<!-- ═══ 13 · PART 02 章节页 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="PART 02 · 权力的约束者">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div class="anim-rise-in" data-anim="rise-in">
+    <p class="kicker" style="letter-spacing:.3em">PART 02 · LIMITED POWER · 3 MIN</p>
+    <h1 class="h1" style="font-size:96px;font-weight:600;margin:18px 0">02 · 权力的约束者</h1>
+    <div class="divider-accent" style="margin:26px auto"></div>
+    <p class="lede" style="margin:0 auto;color:var(--text-2)">把权力关进笼子：从“治民”到“治权”</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">法，何以成人</span><span class="slide-number"></span></div>
+  <div class="notes">【00:08｜转场】第二幕，权力的约束者。</div>
+</section>
+
+<!-- ═══ 14 · 谁来监督监督者 ═══ -->
+<section class="slide" data-deck-label="谁来监督监督者">
+  <p class="kicker">02 · LIMITED POWER</p>
+  <h2 class="h2">谁来监督监督者？</h2>
+  <div class="card" style="margin-top:32px;border-left:4px solid var(--accent-2);max-width:980px;padding:38px 44px">
+    <p class="gold-quote" style="font-size:40px">“如果人都是天使，就不需要任何政府了。”</p>
+    <p class="dim" style="margin-top:14px">—— 麦迪逊《联邦党人文集》第51篇</p>
+  </div>
+  <p class="lede" style="margin-top:32px">权力不会自动向善。它需要被设计：让一个人、一个部门、一次决定，都不能没有边界。</p>
+  <div class="row" style="gap:16px;margin-top:28px">
+    <span class="pill-accent pill">分权</span><span class="dim2">→</span>
+    <span class="pill-accent pill">程序</span><span class="dim2">→</span>
+    <span class="pill-accent pill">公开</span><span class="dim2">＝</span>
+    <span style="font-size:20px;font-weight:700;color:var(--accent-2)">把权力关进笼子</span>
+  </div>
+  <div class="foot-line">权力的第一冲动是扩张；法治的第一反应，是给它装上<b>“门”和“锁”</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 02 · 限权</span><span class="slide-number"></span></div>
+  <div class="notes">【00:27｜问题】但秩序有一个前提：裁判者本身不能为所欲为。麦迪逊说，如果人都是天使，就不需要政府了。权力不会自动向善，它需要被设计。于是，法律从“管别人”，转向“管自己”。</div>
+</section>
+
+<!-- ═══ 15 · 大宪章 ═══ -->
+<section class="slide" data-deck-label="1215 兰尼米德 · 王权第一次低头">
+  <p class="kicker">02 · LIMITED POWER</p>
+  <h2 class="h2">1215，兰尼米德：王权第一次低头</h2>
+  <div class="two-col">
+    <div class="img-frame" style="max-width:560px"><img src="assets/magna_carta.jpg" alt="大宪章 1297年确认本"><div class="img-cap">1297年确认本 · 美国国家档案馆藏</div></div>
+    <div class="stack">
+      <p class="lede" style="font-size:19px">1215年6月15日，英王约翰在兰尼米德盖印确认《大宪章》。</p>
+      <div class="grid g2" style="gap:18px">
+        <div class="card-soft card" style="padding:24px"><h4>不是宣言</h4><p class="dim" style="font-size:15px">而是国王与男爵之间的封建契约</p></div>
+        <div class="card-soft card" style="padding:24px"><h4>两个原则</h4><p class="dim" style="font-size:15px">征税要经同意；自由人非经合法裁判，不得被剥夺自由和财产</p></div>
+      </div>
+      <div class="foot-line" style="margin-top:10px;padding-top:18px">文件本身失败了：10周后被教皇宣布无效，英国陷入内战。<b>失败的文件，却成为后世反复引用的原则库。</b></div>
+      <p class="src-note">资料来源：美国国家档案馆《大宪章》专题页</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 02 · 限权</span><span class="slide-number"></span></div>
+  <div class="notes">【00:30｜大宪章】1215年6月15日，英王约翰在兰尼米德盖印确认《大宪章》。它并不是“人人自由”的宣言，而是国王与男爵之间的封建契约。但它留下了两个原则：征税要经同意；自由人非经合法裁判，不得被剥夺自由和财产。</div>
+</section>
+
+<!-- ═══ 16 · 第39条 ═══ -->
+<section class="slide" data-deck-label="第39条 · 正当程序的火种">
+  <p class="kicker">02 · LIMITED POWER</p>
+  <h2 class="h2">第39条：正当程序的火种</h2>
+  <div class="card" style="margin-top:34px;border-left:4px solid var(--accent-2);padding:44px 52px">
+    <p class="serif" style="font-size:26px;font-style:italic;color:var(--text-2);margin:0 0 22px;line-height:1.6">No free man shall be seized or imprisoned … except by the lawful judgment of his equals or by the law of the land.</p>
+    <p class="gold-quote" style="font-size:34px">“任何自由人，非经其同等地位者的合法裁判，或依国法，不得被逮捕、监禁、剥夺财产、流放，或以任何方式毁灭。”</p>
+  </div>
+  <div class="row" style="margin-top:36px;gap:12px">
+    <span class="pill">人身保护令</span><span class="dim2">→</span>
+    <span class="pill">美国宪法第五修正案</span><span class="dim2">→</span>
+    <span class="pill">现代行政程序</span>
+  </div>
+  <div class="foot-line">“正当程序”由此生长。</div>
+  <div class="deck-footer"><span class="dim2">PART 02 · 限权</span><span class="slide-number"></span></div>
+  <div class="notes">【00:36｜第39条】更关键的是第39条和第40条：任何自由人，非经同等地位者的合法裁判或依国法，不得被逮捕、监禁、剥夺财产；我们不向任何人出售、拒绝或拖延正义。这段话后来长成了正当程序、人身保护令，以及美国宪法第五修正案。文件本身失败了，但它留下的原则活了下来。</div>
+</section>
+
+<!-- ═══ 17 · 王在法下演进 ═══ -->
+<section class="slide" data-deck-label="从王在法下到权力清单">
+  <p class="kicker">02 · LIMITED POWER</p>
+  <h2 class="h2">从“王在法下”到“权力清单”</h2>
+  <div class="tl">
+    <div class="row anim-stagger-list" data-anim-target>
+      <div class="item"><div class="year">1215</div><div class="dot"></div><h4>大宪章</h4><p>王权受契约约束</p></div>
+      <div class="item"><div class="year">1689</div><div class="dot"></div><h4>权利法案</h4><p>议会主权，王权受限</p></div>
+      <div class="item"><div class="year">1787/1789</div><div class="dot"></div><h4>美国宪法</h4><p>分权制衡，联邦共和</p></div>
+      <div class="item"><div class="year">20世纪以来</div><div class="dot"></div><h4>行政法治</h4><p>合宪性审查，阳光政府</p></div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:52px">
+    <div class="card-soft card" style="padding:26px"><h4>限权的主体</h4><p class="dim">从“君主”扩展到“一切公权力”</p></div>
+    <div class="card-soft card" style="padding:26px"><h4>限权的工具</h4><p class="dim">从“契约”扩展到“宪法、程序、监督”</p></div>
+  </div>
+  <div class="foot-line">“王在法下”不是一句古话，而是一套<b>持续升级的制度技术</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 02 · 限权</span><span class="slide-number"></span></div>
+  <div class="notes">【00:25｜演进】从大宪章到权利法案，再到美国宪法和现代行政法，限权的主体从君主扩展到一切公权力；限权的工具从契约扩展到宪法、程序和监督。“王在法下”，最终变成“权力在法下”。</div>
+</section>
+
+<!-- ═══ 18 · 中国宪法 ═══ -->
+<section class="slide" data-deck-label="中国宪法 · 不得有超越宪法法律的特权">
+  <p class="kicker">02 · LIMITED POWER</p>
+  <h2 class="h2">中国宪法：没有超越宪法法律的特权</h2>
+  <div class="card" style="margin-top:30px;border-left:4px solid var(--accent-2);max-width:1020px;padding:38px 46px">
+    <p class="gold-quote" style="font-size:36px">“任何组织或者个人都不得有超越宪法和法律的特权。”</p>
+    <p class="dim" style="margin-top:14px">——《中华人民共和国宪法》第五条</p>
+  </div>
+  <div class="grid g2" style="margin-top:32px">
+    <div class="card card-accent" style="padding:28px"><h4>必须遵守</h4><p class="dim" style="font-size:15px;line-height:1.7">一切国家机关和武装力量、各政党和各社会团体、各企业事业组织，都必须遵守宪法和法律。</p></div>
+    <div class="card card-accent" style="padding:28px"><h4>必须追究</h4><p class="dim" style="font-size:15px;line-height:1.7">一切违反宪法和法律的行为，必须予以追究。</p></div>
+  </div>
+  <div class="row" style="margin-top:30px;gap:14px">
+    <span class="pill pill-accent">1982 · 现行宪法</span>
+    <span class="pill pill-accent">2014 · 国家宪法日</span>
+    <span class="pill pill-accent">2018 · 宪法宣誓入宪</span>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 02 · 限权</span><span class="slide-number"></span></div>
+  <div class="notes">【00:23｜中国宪法】中国宪法第五条把这件事说得很清楚：一切国家机关和武装力量、各政党和各社会团体、各企业事业组织都必须遵守宪法和法律；任何组织或者个人都不得有超越宪法和法律的特权。这不是一句口号，而是法治的底线。</div>
+</section>
+
+<!-- ═══ 19 · 限权三技术 ═══ -->
+<section class="slide" data-deck-label="限权的三种技术">
+  <p class="kicker">02 · LIMITED POWER</p>
+  <h2 class="h2">限权的三种技术</h2>
+  <div class="steps" style="margin-top:48px">
+    <div class="step card-hover"><div class="num">01</div><h4>分权</h4><p>让权力相互制衡<br><span class="dim2">横向：立法、行政、司法；纵向：中央与地方权限法定。</span></p></div>
+    <div class="step card-hover"><div class="num">02</div><h4>程序</h4><p>让权力按步骤行使<br><span class="dim2">公开、听证、说明理由、救济；每一步都留下可审查的痕迹。</span></p></div>
+    <div class="step card-hover"><div class="num">03</div><h4>监督</h4><p>让权力在阳光下运行<br><span class="dim2">人大监督、司法审查、检察公益诉讼、社会监督。</span></p></div>
+  </div>
+  <div class="foot-line">最有力的限权，不是让权力变弱，而是让权力<b>可问责</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 02 · 限权</span><span class="slide-number"></span></div>
+  <div class="notes">【00:18｜三种技术】限权靠三种技术：分权，让权力相互制衡；程序，让权力按步骤行使；监督，让权力在阳光下运行。最有力的限权，不是让权力变弱，而是让权力可问责。</div>
+</section>
+
+<!-- ═══ 20 · 限权小结金句 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="小结 · 从治民到治权">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div style="max-width:1080px">
+    <div class="serif" style="font-size:130px;line-height:.9;color:#C9A45C;opacity:.55">“</div>
+    <blockquote class="gold-quote anim-fade-up" data-anim="fade-up" style="font-size:50px;color:#F3E9D5;margin:-46px 0 30px">
+      限权，不是让权力无所作为；<br>而是让权力可以被预期、被追问、被纠正。
+    </blockquote>
+    <div class="divider-accent" style="margin:0 auto 24px;width:72px"></div>
+    <p style="font-size:22px;color:#C8B898">从“治民”到“治权”——这是<b style="color:#C9A45C">第二次跃迁</b>。</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">PART 02 · 限权 · 小结</span><span class="slide-number"></span></div>
+  <div class="notes">【00:13｜小结】限权，不是让权力无所作为，而是让权力可以被预期、被追问、被纠正。从“治民”到“治权”，这是第二次跃迁。</div>
+</section>
+
+<!-- ═══ 21 · PART 03 章节页 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="PART 03 · 权利的保障者">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div class="anim-rise-in" data-anim="rise-in">
+    <p class="kicker" style="letter-spacing:.3em">PART 03 · RIGHTS · 3 MIN</p>
+    <h1 class="h1" style="font-size:96px;font-weight:600;margin:18px 0">03 · 权利的保障者</h1>
+    <div class="divider-accent" style="margin:26px auto"></div>
+    <p class="lede" style="margin:0 auto;color:var(--text-2)">从身份到契约：让每个人都有尊严</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">法，何以成人</span><span class="slide-number"></span></div>
+  <div class="notes">【00:08｜转场】第三幕，权利的保障者。</div>
+</section>
+
+<!-- ═══ 22 · 梅因命题 ═══ -->
+<section class="slide" data-deck-label="梅因命题 · 从身份到契约">
+  <p class="kicker">03 · RIGHTS</p>
+  <h2 class="h2">梅因命题：从身份到契约</h2>
+  <div class="vs">
+    <div class="card bad-side side anim-fade-left" data-anim="fade-left">
+      <h3>身份社会</h3>
+      <p class="pill" style="margin-bottom:14px">权利来自“你是谁”</p>
+      <ul>
+        <li>出生、等级、家族、性别</li>
+        <li>人属于共同体</li>
+        <li>义务先于选择</li>
+      </ul>
+    </div>
+    <div class="mid">→</div>
+    <div class="card good-side side anim-fade-right" data-anim="fade-right">
+      <h3>契约社会</h3>
+      <p class="pill pill-accent" style="margin-bottom:14px">权利来自“人之为人”</p>
+      <ul>
+        <li>人格、合意、选择、责任</li>
+        <li>共同体属于人</li>
+        <li>选择与义务并存</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin-top:34px;border-left:4px solid var(--accent)">
+    <p class="serif" style="font-size:22px;font-style:italic;margin:0">“所有进步社会的运动，到此处为止，是一个‘从身份到契约’的运动。”<span class="dim2" style="font-size:15px;font-style:normal">　——梅因《古代法》，1861</span></p>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 03 · 权利</span><span class="slide-number"></span></div>
+  <div class="notes">【00:26｜梅因】梅因在《古代法》里说，所有进步社会的运动，是一个“从身份到契约”的运动。在前现代，权利来自你出生在哪个家庭、哪个等级；在现代，权利来自你作为人的身份，来自你的同意和选择。</div>
+</section>
+
+<!-- ═══ 23 · 法国民法典 ═══ -->
+<section class="slide" data-deck-label="1804 · 把革命写进条文">
+  <p class="kicker">03 · RIGHTS</p>
+  <h2 class="h2">1804：把革命写进条文</h2>
+  <div class="two-col">
+    <div class="stack">
+      <div class="img-frame" style="max-width:520px"><img src="assets/code_civil.jpg" alt="拿破仑法典"><div class="img-cap">《拿破仑法典》1807年版扉页（示意）</div></div>
+      <p class="src-note">资料来源：Legifrance《法国民法典》；卢浮宫</p>
+    </div>
+    <div class="stack">
+      <p class="lede" style="font-size:19px">《法国民法典》颁布。它把大革命的原则，变成一套<b>可操作的技术</b>。</p>
+      <div class="row" style="gap:30px;margin-top:20px">
+        <div class="stat accent"><div class="stat-n">2281<span class="u">条</span></div><div class="stat-l">条文总数</div></div>
+      </div>
+      <div class="grid g3" style="margin-top:28px;gap:18px">
+        <div><h4>财产权</h4><p class="dim" style="font-size:14px">所有权绝对</p></div>
+        <div><h4>契约自由</h4><p class="dim" style="font-size:14px">合意创造义务</p></div>
+        <div><h4>法律面前平等</h4><p class="dim" style="font-size:14px">当时主要是有产男性</p></div>
+      </div>
+      <p style="font-size:17px;color:var(--text-2);line-height:1.7;margin-top:26px">相传，拿破仑说，他真正的光荣不是四十场胜仗，而是这部民法典。<br><b style="color:var(--accent-2)">但它也是“有产者的法典”</b>：女性、工人、殖民地奴隶，长期被排除在“普遍权利”之外。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 03 · 权利</span><span class="slide-number"></span></div>
+  <div class="notes">【00:32｜法国民法典】1804年，《法国民法典》颁布，共2281条。它把大革命的原则变成一套可操作的技术：财产权、契约自由、法律面前平等。拿破仑说，他真正的光荣不是四十场胜仗，而是这部民法典。但它也是“有产者的法典”：女性、工人、殖民地奴隶，长期被排除在“普遍权利”之外。</div>
+</section>
+
+<!-- ═══ 24 · 人权宣言1789 ═══ -->
+<section class="slide" data-deck-label="1789 · 未完成的普遍性">
+  <p class="kicker">03 · RIGHTS</p>
+  <h2 class="h2">1789：自由、平等，以及未完成的普遍性</h2>
+  <p class="lede">1789年8月26日，法国制宪议会通过《人权与公民权宣言》。</p>
+  <div class="grid g3" style="margin-top:38px">
+    <div class="card card-accent" style="padding:30px"><span class="role-tag" style="margin-bottom:16px">第 1 条</span><p style="font-size:17px;line-height:1.7">人生来并且始终是<b>自由</b>的，在权利上是<b>平等</b>的。</p></div>
+    <div class="card card-accent" style="padding:30px"><span class="role-tag" style="margin-bottom:16px">第 6 条</span><p style="font-size:17px;line-height:1.7">法律是<b>公意</b>的表达。每个公民都有权参与制定。</p></div>
+    <div class="card card-accent" style="padding:30px"><span class="role-tag" style="margin-bottom:16px">第 17 条</span><p style="font-size:17px;line-height:1.7"><b>财产</b>是神圣不可侵犯的权利。</p></div>
+  </div>
+  <div class="foot-line">宣言说“人”，但当时的“人”并不包括所有人。普遍性不是一次宣布完成的，<b>它是后来者一步步争来的</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 03 · 权利</span><span class="slide-number"></span></div>
+  <div class="notes">【00:32｜人权宣言】1789年的《人权宣言》说得更彻底：人生来并且始终是自由的，在权利上是平等的；法律是公意的表达；财产是神圣不可侵犯的权利。但宣言说“人”，当时的“人”并不包括所有人。普遍性不是一次宣布完成的，它是后来者一步步争来的。</div>
+</section>
+
+<!-- ═══ 25 · 世界人权宣言 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="1948 · 世界人权宣言第一条">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div style="max-width:1120px">
+    <p class="kicker" style="letter-spacing:.28em">1948 · UNIVERSAL DECLARATION</p>
+    <blockquote class="gold-quote anim-fade-up" data-anim="fade-up" style="font-size:46px;color:#F3E9D5;margin:28px 0 30px">
+      人人生而自由，在尊严和权利上一律平等。<br>他们赋有理性和良心，<br>并应以兄弟关系的精神相对待。
+    </blockquote>
+    <p style="font-size:18px;color:#C8B898">《世界人权宣言》第一条 · 30条 · 1948年12月10日联合国大会通过</p>
+    <p style="font-size:16px;color:#96866A;margin-top:14px">中国代表<b style="color:#C9A45C">张彭春</b>参与起草，推动“良心”（conscience）写入第一条。</p>
+    <div class="divider-accent" style="margin:30px auto;width:72px"></div>
+    <p style="font-size:22px;color:#C8B898">尊严，不再是恩赐，而是<b style="color:#C9A45C">人之为人的起点</b>。</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">PART 03 · 权利</span><span class="slide-number"></span></div>
+  <div class="notes">【00:30｜世界人权宣言】1948年12月10日，联合国大会通过《世界人权宣言》，30条。第一条说：人人生而自由，在尊严和权利上一律平等；他们赋有理性和良心，并应以兄弟关系的精神相对待。中国代表张彭春参与了起草，推动把“良心”写进第一条。尊严，不再是恩赐，而是人之为人的起点。</div>
+</section>
+
+<!-- ═══ 26 · 三代人权 ═══ -->
+<section class="slide" data-deck-label="三代人权 · 叠加而非替代">
+  <p class="kicker">03 · RIGHTS</p>
+  <h2 class="h2">三代人权：不是替代，而是叠加</h2>
+  <div class="grid g3" style="margin-top:44px">
+    <div class="card card-hover center tc" style="padding:40px 30px"><div class="serif" style="font-size:72px;font-weight:700;color:var(--accent);line-height:1">I</div><h3 style="margin-top:14px">公民与政治权利</h3><span class="pill pill-accent">自由</span><p class="dim" style="font-size:15px;margin-top:14px">表达、信仰、选举、公正审判</p></div>
+    <div class="card card-hover center tc" style="padding:40px 30px"><div class="serif" style="font-size:72px;font-weight:700;color:var(--accent);line-height:1">II</div><h3 style="margin-top:14px">经济、社会与文化权利</h3><span class="pill pill-accent">平等</span><p class="dim" style="font-size:15px;margin-top:14px">劳动、教育、医疗、住房</p></div>
+    <div class="card card-hover center tc" style="padding:40px 30px"><div class="serif" style="font-size:72px;font-weight:700;color:var(--accent);line-height:1">III</div><h3 style="margin-top:14px">集体与连带权利</h3><span class="pill pill-accent">团结</span><p class="dim" style="font-size:15px;margin-top:14px">发展、环境、和平</p></div>
+  </div>
+  <div class="foot-line">“三代”只是分析的方便，不是价值的等级。每增加一层，都是对<b>“谁才算人”</b>的重新回答。</div>
+  <div class="deck-footer"><span class="dim2">PART 03 · 权利</span><span class="slide-number"></span></div>
+  <div class="notes">【00:22｜三代人权】人权不是一个清单，而是一个不断扩展的谱系。第一代是公民和政治权利，关键词是自由；第二代是经济、社会和文化权利，关键词是平等；第三代是发展、环境、和平等集体权利，关键词是团结。不是替代，而是叠加。</div>
+</section>
+
+<!-- ═══ 27 · 中国权利演进 ═══ -->
+<section class="slide" data-deck-label="中国 · 从人权入宪到民法典时代">
+  <p class="kicker">03 · RIGHTS</p>
+  <h2 class="h2">中国：从“人权入宪”到“民法典时代”</h2>
+  <div class="tl">
+    <div class="row anim-stagger-list" data-anim-target>
+      <div class="item"><div class="year">1982</div><div class="dot"></div><h4>现行宪法</h4><p>公民基本权利体系</p></div>
+      <div class="item"><div class="year">2004</div><div class="dot"></div><h4>人权入宪</h4><p>“国家尊重和保障人权”</p></div>
+      <div class="item"><div class="year">2020</div><div class="dot"></div><h4>民法典</h4><p>7编 1260条</p></div>
+      <div class="item"><div class="year">2021</div><div class="dot"></div><h4>个人信息保护法</h4><p>数字时代的权利回应</p></div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:48px">
+    <div class="stat accent"><div class="stat-n">7<span class="u">编</span> 1260<span class="u">条</span></div><div class="stat-l">民法典 · 人格权独立成编</div><div class="stat-d">把“人”放在财产与契约之前：从“头顶上的安全”到“数字时代的隐私”，权利有了更细的落点。</div></div>
+    <div class="card" style="padding:32px;align-self:stretch;display:flex;flex-direction:column;justify-content:center">
+      <p style="font-size:20px;line-height:1.7;font-style:italic" class="serif">从“纸面上的权利”到“生活中的权利”，中间隔着一条很长的制度之路。</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 03 · 权利</span><span class="slide-number"></span></div>
+  <div class="notes">【00:20｜中国权利】中国的人权保障，也有一条清晰的制度线：1982年现行宪法；2004年“国家尊重和保障人权”入宪；2020年民法典，7编1260条，人格权独立成编；2021年个人信息保护法。权利从纸面走进日常生活。</div>
+</section>
+
+<!-- ═══ 28 · 权利小结金句 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="小结 · 从臣民到公民">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div style="max-width:1080px">
+    <div class="serif" style="font-size:130px;line-height:.9;color:#C9A45C;opacity:.55">“</div>
+    <blockquote class="gold-quote anim-fade-up" data-anim="fade-up" style="font-size:50px;color:#F3E9D5;margin:-46px 0 30px">
+      法律把“人”从身份、从属和恩赐中<br>解放出来，变成权利的主体。
+    </blockquote>
+    <div class="divider-accent" style="margin:0 auto 24px;width:72px"></div>
+    <p style="font-size:22px;color:#C8B898">从“臣民”到“公民”——这是<b style="color:#C9A45C">第三次跃迁</b>。</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">PART 03 · 权利 · 小结</span><span class="slide-number"></span></div>
+  <div class="notes">【00:10｜小结】法律把“人”从身份、从属和恩赐中解放出来，变成权利的主体。从“臣民”到“公民”，这是第三次跃迁。</div>
+</section>
+
+<!-- ═══ 29 · PART 04 章节页 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="PART 04 · 文明的推动者">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div class="anim-rise-in" data-anim="rise-in">
+    <p class="kicker" style="letter-spacing:.3em">PART 04 · CIVILIZATION · 3 MIN</p>
+    <h1 class="h1" style="font-size:96px;font-weight:600;margin:18px 0">04 · 文明的推动者</h1>
+    <div class="divider-accent" style="margin:26px auto"></div>
+    <p class="lede" style="margin:0 auto;color:var(--text-2)">让陌生人可以合作：信任的规模化</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">法，何以成人</span><span class="slide-number"></span></div>
+  <div class="notes">【00:08｜转场】第四幕，文明的推动者。</div>
+</section>
+
+<!-- ═══ 30 · 陌生人社会 ═══ -->
+<section class="slide" data-deck-label="陌生人社会 · 合作为什么难">
+  <p class="kicker">04 · CIVILIZATION</p>
+  <h2 class="h2">陌生人社会：合作为什么难？</h2>
+  <div class="vs">
+    <div class="card bad-side side anim-fade-left" data-anim="fade-left">
+      <h3>熟人社会</h3>
+      <p class="pill" style="margin-bottom:14px">重复博弈</p>
+      <ul>
+        <li>你骗我一次，下次就没人跟你做生意</li>
+        <li>口碑、关系、面子</li>
+        <li>低交易成本，但半径很小</li>
+      </ul>
+    </div>
+    <div class="mid">→</div>
+    <div class="card good-side side anim-fade-right" data-anim="fade-right">
+      <h3>陌生人社会</h3>
+      <p class="pill pill-accent" style="margin-bottom:14px">一次性博弈</p>
+      <ul>
+        <li>我不知道你的过去，也不打算再见你</li>
+        <li>匿名、信息不对称、机会主义</li>
+        <li>高交易成本，但合作半径可以无限大</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-line">市场越扩大，信任就越不能靠<b>“认识”</b>，只能靠<b>“规则”</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 04 · 文明</span><span class="slide-number"></span></div>
+  <div class="notes">【00:28｜陌生人社会】熟人社会靠重复博弈：你骗我一次，下次就没人跟你做生意。但市场越大，我们越要和陌生人合作。陌生人不知道你的口碑，也不打算再见你。这时，信任不能靠“认识”，只能靠“规则”。</div>
+</section>
+
+<!-- ═══ 31 · 商法 ═══ -->
+<section class="slide" data-deck-label="商法 · 把信任做成基础设施">
+  <p class="kicker">04 · CIVILIZATION</p>
+  <h2 class="h2">商法：把信任做成基础设施</h2>
+  <div class="matrix" style="--cols:3;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px">
+    <div class="mx card-hover" style="padding:26px"><span class="tag">NEGOTIABLE</span><h4>票据</h4><p>让信用可以流通</p></div>
+    <div class="mx card-hover" style="padding:26px"><span class="tag">COMPANY</span><h4>公司</h4><p>让陌生人共同出资</p></div>
+    <div class="mx card-hover" style="padding:26px"><span class="tag">INSURANCE</span><h4>保险</h4><p>把风险变成可计算的价格</p></div>
+    <div class="mx card-hover" style="padding:26px"><span class="tag">BANKRUPTCY</span><h4>破产</h4><p>让失败可以重启</p></div>
+    <div class="mx card-hover" style="padding:26px"><span class="tag">ARBITRATION</span><h4>仲裁</h4><p>让跨境纠纷可解</p></div>
+    <div class="mx card-hover" style="padding:26px"><span class="tag">CONTRACT</span><h4>契约</h4><p>让承诺变成义务</p></div>
+  </div>
+  <div class="row" style="margin-top:40px;gap:12px;flex-wrap:wrap">
+    <span class="pill">11—13世纪 地中海商人法</span><span class="dim2">→</span>
+    <span class="pill">1958《纽约公约》</span><span class="dim2">→</span>
+    <span class="pill">1980《维也纳公约》</span>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 04 · 文明</span><span class="slide-number"></span></div>
+  <div class="notes">【00:32｜商法】商法是第一套“信任基础设施”。可转让票据，让信用可以流通；公司法，让陌生人可以共同出资；保险合同，把风险变成可计算的价格；破产法，让失败可以重启；仲裁，让跨境纠纷有地方可解。从地中海商人法，到1980年《维也纳公约》，规则让交易半径不断扩大。</div>
+</section>
+
+<!-- ═══ 32 · 国际法 ═══ -->
+<section class="slide" data-deck-label="国际法 · 从丛林到共同规则">
+  <p class="kicker">04 · CIVILIZATION</p>
+  <h2 class="h2">国际法：从“丛林”到“共同规则”</h2>
+  <div class="tl">
+    <div class="row anim-stagger-list" data-anim-target style="grid-template-columns:repeat(6,1fr)">
+      <div class="item"><div class="year">1625</div><div class="dot"></div><h4>战争与和平法</h4><p>格劳秀斯</p></div>
+      <div class="item"><div class="year">1648</div><div class="dot"></div><h4>威斯特伐利亚和约</h4><p>主权平等</p></div>
+      <div class="item"><div class="year">1945</div><div class="dot"></div><h4>联合国宪章</h4><p>和平解决争端</p></div>
+      <div class="item"><div class="year">1948</div><div class="dot"></div><h4>世界人权宣言</h4><p>人的尊严</p></div>
+      <div class="item"><div class="year">1995</div><div class="dot"></div><h4>世界贸易组织</h4><p>规则型贸易</p></div>
+      <div class="item"><div class="year">2015</div><div class="dot"></div><h4>巴黎协定</h4><p>气候共同体</p></div>
+    </div>
+  </div>
+  <div class="foot-line" style="margin-top:60px">主权平等、条约必须遵守、和平解决争端——国际法把<b>“强者的任性”</b>关进规则的房间。<br><span class="dim" style="font-size:16px">它仍然软弱：没有世界政府，执行依赖国家合作。但没有它，世界会更糟。</span></div>
+  <div class="deck-footer"><span class="dim2">PART 04 · 文明</span><span class="slide-number"></span></div>
+  <div class="notes">【00:30｜国际法】国际法把同样的逻辑推到国家之间。1625年格劳秀斯写《战争与和平法》；1648年威斯特伐利亚和约确立主权平等；1945年联合国宪章；1948年世界人权宣言；1995年WTO；2015年巴黎协定。它没有世界政府，执行仍然软弱，但没有它，世界会更糟。</div>
+</section>
+
+<!-- ═══ 33 · 人权法 ═══ -->
+<section class="slide" data-deck-label="人权法 · 给主权划一条底线">
+  <p class="kicker">04 · CIVILIZATION</p>
+  <h2 class="h2">人权法：给主权划一条底线</h2>
+  <p class="lede">国家如何对待自己的人民，不再只是“内政”。1966年，两个人权公约把人权的清单变成法律义务。</p>
+  <div class="grid g2" style="margin-top:36px">
+    <div class="card card-accent" style="padding:34px">
+      <h3>ICCPR</h3>
+      <p class="dim" style="font-size:15px;margin-bottom:12px">公民权利与政治权利国际公约</p>
+      <p style="font-size:16px">表达、信仰、选举、公正审判</p>
+    </div>
+    <div class="card card-accent" style="padding:34px">
+      <h3>ICESCR</h3>
+      <p class="dim" style="font-size:15px;margin-bottom:12px">经济、社会及文化权利国际公约</p>
+      <p style="font-size:16px">劳动、教育、健康、社会保障</p>
+    </div>
+  </div>
+  <div class="foot-line">区域人权法院：欧洲、美洲、非洲。<br>但这也是最敏感的部分：<b>人权保护与主权原则之间，始终存在张力</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 04 · 文明</span><span class="slide-number"></span></div>
+  <div class="notes">【00:26｜人权法】人权法给主权划了一条底线：一个国家如何对待自己的人民，不再是完全不受审视的“内政”。1966年两个人权公约，区域人权法院，都是这条底线的制度化。但这也是最敏感的部分：人权保护与主权原则之间，始终存在张力。</div>
+</section>
+
+<!-- ═══ 34 · 交易成本 ═══ -->
+<section class="slide" data-deck-label="规则如何降低交易成本">
+  <p class="kicker">04 · CIVILIZATION</p>
+  <h2 class="h2">规则如何降低交易成本</h2>
+  <div class="steps" style="margin-top:48px">
+    <div class="step card-hover"><div class="num">01</div><h4>信息</h4><p>质量、权利、责任——让陌生人也能“看见”交易对象。</p></div>
+    <div class="step card-hover"><div class="num">02</div><h4>承诺</h4><p>合同、担保、票据——让说过的话，变成可执行的义务。</p></div>
+    <div class="step card-hover"><div class="num">03</div><h4>救济</h4><p>法院、仲裁、破产——让失败可以处理，让退出可以有序。</p></div>
+  </div>
+  <div class="foot-line">信任，从<b>“我保证”</b>变成<b>“制度保证”</b>。规则不是要让交易变得复杂，而是让复杂的世界变得可计算。</div>
+  <div class="deck-footer"><span class="dim2">PART 04 · 文明</span><span class="slide-number"></span></div>
+  <div class="notes">【00:22｜交易成本】规则降低交易成本，靠三个机制：第一，让信息可识别——质量、权利、责任，都能被看见；第二，让承诺可执行——合同、担保、票据；第三，让失败可处理——法院、仲裁、破产。信任，从“我保证”变成“制度保证”。</div>
+</section>
+
+<!-- ═══ 35 · 前沿 ═══ -->
+<section class="slide" data-deck-label="下一个前沿 · 跑在风险前面">
+  <p class="kicker">04 · CIVILIZATION</p>
+  <h2 class="h2">下一个前沿：法律要跑在风险前面</h2>
+  <div class="grid g2" style="margin-top:40px">
+    <div class="card card-accent card-hover" style="padding:30px"><h4>AI 治理</h4><p class="dim" style="font-size:15px">欧盟《人工智能法案》2024年生效，按风险分级监管。</p></div>
+    <div class="card card-accent card-hover" style="padding:30px"><h4>数据跨境</h4><p class="dim" style="font-size:15px">GDPR（2018）；中国《个人信息保护法》（2021）。</p></div>
+    <div class="card card-accent card-hover" style="padding:30px"><h4>气候</h4><p class="dim" style="font-size:15px">《巴黎协定》（2015）：国家自主贡献与全球盘点。</p></div>
+    <div class="card card-accent card-hover" style="padding:30px"><h4>公共卫生</h4><p class="dim" style="font-size:15px">《国际卫生条例》：全球监测、通报与应对。</p></div>
+  </div>
+  <div class="foot-line">科技把“未来”提前，法律必须学会<b>“预判”</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 04 · 文明</span><span class="slide-number"></span></div>
+  <div class="notes">【00:20｜前沿】今天，法律的下一个前沿，是跑在风险前面。人工智能需要风险分级，数据需要跨境规则，气候需要国家自主贡献，公共卫生需要全球预警。科技把“未来”提前，法律必须学会“预判”。</div>
+</section>
+
+<!-- ═══ 36 · 文明小结金句 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="小结 · 从熟人信任到制度信任">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div style="max-width:1120px">
+    <div class="serif" style="font-size:130px;line-height:.9;color:#C9A45C;opacity:.55">“</div>
+    <blockquote class="gold-quote anim-fade-up" data-anim="fade-up" style="font-size:50px;color:#F3E9D5;margin:-46px 0 30px">
+      法律让合作从“我认识你”，<br>扩展到“我不认识你，但我相信规则”。
+    </blockquote>
+    <div class="divider-accent" style="margin:0 auto 24px;width:72px"></div>
+    <p style="font-size:22px;color:#C8B898">从熟人信任到制度信任——这是<b style="color:#C9A45C">第四次跃迁</b>。</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">PART 04 · 文明 · 小结</span><span class="slide-number"></span></div>
+  <div class="notes">【00:14｜小结】法律让合作从“我认识你”，扩展到“我不认识你，但我相信规则”。从熟人信任到制度信任，这是第四次跃迁。</div>
+</section>
+
+<!-- ═══ 37 · PART 05 章节页 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="PART 05 · 中国现场">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div class="anim-rise-in" data-anim="rise-in">
+    <p class="kicker" style="letter-spacing:.3em">PART 05 · CHINA · 7 MIN</p>
+    <h1 class="h1" style="font-size:96px;font-weight:600;margin:18px 0">05 · 中国现场</h1>
+    <div class="divider-accent" style="margin:26px auto"></div>
+    <p class="lede" style="margin:0 auto;color:var(--text-2)">四重角色的中国答卷：不是简单套用，而是看它们在中国现场，如何长出自己的样子。</p>
+  </div>
+  <div class="deck-footer"><span class="dim2" style="color:#96866A">法，何以成人</span><span class="slide-number"></span></div>
+  <div class="notes">【00:20｜转场】接下来，我们把镜头拉回中国。不是简单套用四重角色，而是看它们在中国现场，如何长出自己的样子。</div>
+</section>
+
+<!-- ═══ 38 · 中国对照表 ═══ -->
+<section class="slide" data-deck-label="四重角色 · 一张中国对照表">
+  <p class="kicker">05 · CHINA</p>
+  <h2 class="h2">四重角色，一张中国对照表</h2>
+  <div class="grid g2" style="margin-top:36px;gap:22px">
+    <div class="card card-hover row" style="padding:26px 30px;gap:26px;align-items:center">
+      <span class="role-tag">01 秩序</span>
+      <div class="fill"><h4>市场准入负面清单</h4><p class="dim" style="font-size:14px"><b style="color:var(--accent-2);font-size:20px">106 项</b> · 非禁即入：清单之外，依法平等进入</p></div>
+    </div>
+    <div class="card card-hover row" style="padding:26px 30px;gap:26px;align-items:center">
+      <span class="role-tag">02 限权</span>
+      <div class="fill"><h4>北京“无事不扰”</h4><p class="dim" style="font-size:14px"><b style="color:var(--accent-2);font-size:20px">70.6%</b> · 2025年涉企非现场检查占比</p></div>
+    </div>
+    <div class="card card-hover row" style="padding:26px 30px;gap:26px;align-items:center">
+      <span class="role-tag">03 权利</span>
+      <div class="fill"><h4>常熟共享检察听证</h4><p class="dim" style="font-size:14px"><b style="color:var(--accent-2);font-size:20px">15 个</b>听证室 · 覆盖11个乡镇板块</p></div>
+    </div>
+    <div class="card card-hover row" style="padding:26px 30px;gap:26px;align-items:center">
+      <span class="role-tag">04 推动</span>
+      <div class="fill"><h4>三星堆基层立法联系点</h4><p class="dim" style="font-size:14px"><b style="color:var(--accent-2);font-size:20px">54 个</b> · 全国人大常委会法工委联系点（2025）</p></div>
+    </div>
+  </div>
+  <div class="foot-line">接续人类法治文明的共同逻辑，<b>扎根中国实践</b>。</div>
+  <div class="deck-footer"><span class="dim2">PART 05 · 中国现场</span><span class="slide-number"></span></div>
+  <div class="notes">【00:55｜中国总览】这张对照表，是我们整个中国部分的路线图。秩序：市场准入负面清单，“非禁即入”；限权：北京“无事不扰”，让检查有边界；权利：常熟把检察听证开到村口；推动：三星堆的基层立法联系点，让田间地头的声音进入国家立法。</div>
+</section>
+
+<!-- ═══ 39 · 负面清单 ═══ -->
+<section class="slide" data-deck-label="秩序 · 一张清单划出可以做什么">
+  <p class="kicker">05 · CHINA · 秩序</p>
+  <h2 class="h2">秩序：一张清单，划出“可以做什么”</h2>
+  <div class="two-col" style="margin-top:20px">
+    <div>
+      <div class="stat accent" style="border-top-width:4px"><div class="stat-n" style="font-size:120px;line-height:.9">106<span class="u" style="font-size:34px">项</span></div><div class="stat-l">2025年版清单事项</div><div class="stat-d">清单之外，各类经营主体依法平等进入。“非禁即入”，是承诺，也是约束。</div></div>
+    </div>
+    <div class="stack">
+      <div class="card" style="padding:32px">
+        <h4>2018 → 2025 · 清单持续瘦身</h4>
+        <div class="row" style="margin-top:18px;gap:18px;align-items:baseline">
+          <span class="serif" data-roll style="font-size:56px;font-weight:700;color:var(--text-2)">151 项</span>
+          <span class="dim2" style="font-size:30px">→</span>
+          <span class="serif" data-roll style="font-size:72px;font-weight:700;color:var(--accent-2)">106 项</span>
+          <span class="pill pill-accent">缩减约 30%</span>
+        </div>
+      </div>
+      <p style="font-size:17px;color:var(--text-2);line-height:1.7">一张清单，把“能不能做”从关系、审批、地方保护，变成公开的规则。</p>
+      <div class="foot-line" style="margin-top:6px;padding-top:16px">秩序，不只是“管住”，更是<b>让市场知道边界在哪里</b>。</div>
+      <p class="src-note">资料来源：国家发展改革委《市场准入负面清单（2025年版）》答记者问</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 05 · 中国现场</span><span class="slide-number"></span></div>
+  <div class="notes">【01:05｜负面清单】先看秩序。2025年版市场准入负面清单，事项从2018年的151项，降到106项，缩减约30%。清单之外，各类经营主体依法平等进入。“非禁即入”四个字，说起来简单，做起来很难：它要把“能不能做”从关系、审批、地方保护，变成一张公开的清单。秩序，不只是“管住”，更是让市场知道边界在哪里。</div>
+</section>
+
+<!-- ═══ 40 · 北京无事不扰 ═══ -->
+<section class="slide" data-deck-label="限权 · 让检查无事不扰">
+  <p class="kicker">05 · CHINA · 限权</p>
+  <h2 class="h2">限权：让检查“无事不扰” <span class="dim2" style="font-size:20px;font-weight:400">2025年 · 北京</span></h2>
+  <div class="stat-row" style="margin-top:40px">
+    <div class="stat accent"><div class="stat-n">70.6<span class="u">%</span></div><div class="stat-l">涉企非现场检查占比</div><div class="stat-d">让“无感监管”替代“频繁上门”</div></div>
+    <div class="stat"><div class="stat-n">55<span class="u">万户</span></div><div class="stat-l">纳入“无事不扰”清单</div><div class="stat-d">低风险、信用好的企业</div></div>
+    <div class="stat"><div class="stat-n">5000<span class="u">+户</span></div><div class="stat-l">被移出清单</div><div class="stat-d">违法失信企业，强化监管</div></div>
+  </div>
+  <div class="card" style="margin-top:36px;padding:30px 34px;border-left:4px solid var(--accent)">
+    <h4>4 步闭环 · 每一次入企检查都可追溯、可评价</h4>
+    <div class="row" style="margin-top:16px;gap:10px;flex-wrap:wrap">
+      <span class="pill pill-accent">扫码检查</span><span class="dim2">·</span>
+      <span class="pill pill-accent">亮码通知</span><span class="dim2">·</span>
+      <span class="pill pill-accent">照单检查</span><span class="dim2">·</span>
+      <span class="pill pill-accent">事后评价</span>
+    </div>
+  </div>
+  <div class="foot-line">限权，不是不监管；而是让监管<b>有边界、有证据、有温度</b>。</div>
+  <p class="src-note">资料来源：北京市市场监管局2025年营商环境白皮书；《人民日报》2026-06-05</p>
+  <div class="deck-footer"><span class="dim2">PART 05 · 中国现场</span><span class="slide-number"></span></div>
+  <div class="notes">【01:05｜北京】再看限权。北京2025年涉企非现场检查占比达到70.6%，55万户低风险、信用好的企业进入“无事不扰”清单；5000多户违法失信企业被移出。扫码检查、亮码通知、照单检查、事后评价——每一次入企检查，都可追溯、可评价。限权，不是不监管，而是让监管有边界、有证据、有温度。</div>
+</section>
+
+<!-- ═══ 41 · 常熟听证 ═══ -->
+<section class="slide" data-deck-label="权利 · 把听证会开到村口">
+  <p class="kicker">05 · CHINA · 权利</p>
+  <h2 class="h2">权利：把听证会开到村口</h2>
+  <div class="card" style="margin-top:28px;border-left:4px solid var(--accent-2);padding:36px 44px">
+    <p class="serif" style="font-size:27px;font-style:italic;line-height:1.65;margin:0">“我还是头一回坐在村委会里旁听检察院的听证会。没想到两家闹了大半年的界址纠纷，当场就给化解了。”</p>
+    <p class="dim2" style="margin-top:14px">—— 常熟某村村民</p>
+  </div>
+  <p class="dim" style="font-size:17px;margin-top:26px;max-width:80ch">把听证从检察院搬到综治中心、村委会、人大代表之家，让当事人不用跑远路，让法理、情理在熟悉的地方相遇。</p>
+  <div class="stat-row" style="margin-top:26px">
+    <div class="stat"><div class="stat-n">15</div><div class="stat-l">共享检察听证室</div></div>
+    <div class="stat"><div class="stat-n">11</div><div class="stat-l">乡镇板块全覆盖</div></div>
+    <div class="stat"><div class="stat-n">34</div><div class="stat-l">件纠纷化解（2025年以来）</div></div>
+    <div class="stat"><div class="stat-n">85</div><div class="stat-l">名听证员参与</div></div>
+  </div>
+  <div class="foot-line">权利，不只是纸面上的条文；它是<b>“你不用跑远路，也能被听见”</b>。</div>
+  <p class="src-note">资料来源：江苏检察网《清风苑》2026-08-25</p>
+  <div class="deck-footer"><span class="dim2">PART 05 · 中国现场</span><span class="slide-number"></span></div>
+  <div class="notes">【01:05｜常熟】权利，有时候就是“不用跑远路”。常熟把检察听证从检察院搬进综治中心、村委会、人大代表之家，建成15个共享听证室，覆盖11个乡镇板块。2025年以来，化解涉家庭、邻里纠纷34件。85名听证员，加上人大代表、调解员、心理咨询师，一起把法理、情理讲清楚。</div>
+</section>
+
+<!-- ═══ 42 · 三星堆立法联系点 ═══ -->
+<section class="slide" data-deck-label="推动 · 让基层的声音进入国家法律">
+  <p class="kicker">05 · CHINA · 推动</p>
+  <h2 class="h2">推动：让基层的声音进入国家法律</h2>
+  <div class="two-col" style="margin-top:16px">
+    <div>
+      <p class="serif" style="font-size:32px;font-weight:600;font-style:italic;color:var(--accent-2)">“把基层的声音，传递进每一部法律”</p>
+      <div class="stat accent" style="margin-top:28px;border-top-width:4px"><div class="stat-n" style="font-size:110px">54<span class="u" style="font-size:34px">个</span></div><div class="stat-l">全国人大常委会法工委基层立法联系点（截至2025.04）</div></div>
+    </div>
+    <div class="stack">
+      <div class="grid g3" style="gap:16px">
+        <div class="card-soft card tc center" style="padding:24px 14px"><div class="serif" data-roll style="font-size:44px;font-weight:700;color:var(--accent-2)">18</div><p class="dim2" style="font-size:13px">个信息采集点</p></div>
+        <div class="card-soft card tc center" style="padding:24px 14px"><div class="serif" data-roll style="font-size:44px;font-weight:700;color:var(--accent-2)">35</div><p class="dim2" style="font-size:13px">名信息员</p></div>
+        <div class="card-soft card tc center" style="padding:24px 14px"><div class="serif" data-roll style="font-size:44px;font-weight:700;color:var(--accent-2)">3</div><p class="dim2" style="font-size:13px">部法律意见征询</p></div>
+      </div>
+      <p style="font-size:16px;color:var(--text-2);line-height:1.7">四川三星堆：2024年12月设立，2025年4月23日揭牌。依托“1+18+N”网络，把田间地头、市井街巷的民意收集起来，沿着“直通车”送进国家立法。已完成代表法、民营经济促进法、民用航空法3部法律的意见征询。</p>
+      <div class="foot-line" style="margin-top:4px;padding-top:16px">推动，不只是“国家推动社会”；也是<b>“社会推动国家”</b>。</div>
+      <p class="src-note">资料来源：贵州人大网2025-04-25；全国人大常委会法工委基层立法联系点</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">PART 05 · 中国现场</span><span class="slide-number"></span></div>
+  <div class="notes">【01:10｜三星堆】推动，是让基层的声音进入国家法律。截至2025年4月，全国人大常委会法工委在全国设立54个基层立法联系点。四川三星堆是其中之一：2024年12月设立，2025年4月23日揭牌；依托“1+18+N”网络，18个信息采集点、35名信息员；已经完成代表法、民营经济促进法、民用航空法3部法律的意见征询。</div>
+</section>
+
+<!-- ═══ 43 · 新图景 ═══ -->
+<section class="slide" data-deck-label="新图景 · 法治成为生活方式">
+  <p class="kicker">05 · CHINA</p>
+  <h2 class="h2">新图景：法治成为一种生活方式</h2>
+  <div class="steps" style="margin-top:44px">
+    <div class="step card-hover"><div class="num">01</div><h4>遇事找法</h4><p>从“找关系”到“找法律”<br><span class="dim2">法律援助、12348、在线诉讼，服务更近。</span></p></div>
+    <div class="step card-hover"><div class="num">02</div><h4>基层治理法治化</h4><p>小事不出村，矛盾不上交<br><span class="dim2">调解、听证、司法确认，三者衔接起来。</span></p></div>
+    <div class="step card-hover"><div class="num">03</div><h4>法治与德治结合</h4><p>法理、情理、伦理一起工作<br><span class="dim2">法律不是冷条文，它要与人情、共识一起生长。</span></p></div>
+  </div>
+  <div class="foot-line">法治不是“多打官司”，而是让规则成为日常生活的<b>底层操作系统</b>。当规则可预期、权利可救济，法治就不再是“别人的事”。</div>
+  <div class="deck-footer"><span class="dim2">PART 05 · 中国现场</span><span class="slide-number"></span></div>
+  <div class="notes">【01:20｜新图景】三个新图景。第一，遇事找法：从“找关系”到“找法律”，法律援助、12348、在线诉讼，让法律服务的门槛降下来。第二，基层治理法治化：小事不出村、矛盾不上交，不是“和稀泥”，而是把调解、听证、司法确认衔接起来。第三，法治与德治结合：法律不是冷冰冰的条文，它要和人情、伦理、共识一起工作。</div>
+</section>
+
+<!-- ═══ 44 · 总结 ═══ -->
+<section class="slide" data-deck-label="总结 · 四重角色一条主线">
+  <p class="kicker">SUMMARY · 总结</p>
+  <h2 class="h2">四重角色，一条主线</h2>
+  <div class="grid g4" style="margin-top:44px">
+    <div class="card center tc card-hover" style="padding:36px 22px"><span class="role-tag" style="margin-bottom:18px">01</span><h3>秩序</h3><p class="dim" style="font-size:15px">先能共存</p></div>
+    <div class="card center tc card-hover" style="padding:36px 22px"><span class="role-tag" style="margin-bottom:18px">02</span><h3>限权</h3><p class="dim" style="font-size:15px">治理可信任</p></div>
+    <div class="card center tc card-hover" style="padding:36px 22px"><span class="role-tag" style="margin-bottom:18px">03</span><h3>权利</h3><p class="dim" style="font-size:15px">人有尊严</p></div>
+    <div class="card center tc card-hover" style="padding:36px 22px"><span class="role-tag" style="margin-bottom:18px">04</span><h3>推动</h3><p class="dim" style="font-size:15px">文明能进步</p></div>
+  </div>
+  <div class="card" style="margin-top:44px;border-left:4px solid var(--accent-2);padding:36px 44px;max-width:960px">
+    <p class="gold-quote" style="font-size:40px">法律，是人类为自己写的“文明说明书”。</p>
+  </div>
+  <div class="deck-footer"><span class="dim2">SUMMARY · 总结</span><span class="slide-number"></span></div>
+  <div class="notes">【00:50｜总结】回到这条主线：秩序，先能共存；限权，治理可信任；权利，人有尊严；推动，文明能进步。四重角色，不是四个孤立的章节，而是一条层层递进的历史逻辑。法律，是人类为自己写的“文明说明书”。</div>
+</section>
+
+<!-- ═══ 45 · 思政落脚 ═══ -->
+<section class="slide" data-deck-label="思政落脚 · 两种极端三问法治">
+  <p class="kicker">SUMMARY · 思政落脚</p>
+  <h2 class="h2">两种极端，三问法治</h2>
+  <div class="grid g2" style="margin-top:34px">
+    <div class="card" style="border-top:3px solid var(--bad);padding:30px">
+      <h4><span style="color:var(--bad)">✕</span> 法律万能论</h4>
+      <p class="dim" style="font-size:15px;line-height:1.7">以为立法能解决一切问题；把复杂的治理，简化成“立个法”。</p>
+    </div>
+    <div class="card" style="border-top:3px solid var(--bad);padding:30px">
+      <h4><span style="color:var(--bad)">✕</span> 法律虚无论</h4>
+      <p class="dim" style="font-size:15px;line-height:1.7">以为法律只是统治工具；把一切规则，都看成“谁强谁有理”。</p>
+    </div>
+  </div>
+  <div class="grid g3" style="margin-top:28px">
+    <div class="card-soft card" style="padding:26px"><span class="role-tag" style="margin-bottom:12px">一问</span><h4>秩序</h4><p style="font-size:15px">规则是否可预期？</p></div>
+    <div class="card-soft card" style="padding:26px"><span class="role-tag" style="margin-bottom:12px">二问</span><h4>限权</h4><p style="font-size:15px">权力是否受约束？</p></div>
+    <div class="card-soft card" style="padding:26px"><span class="role-tag" style="margin-bottom:12px">三问</span><h4>权利</h4><p style="font-size:15px">人的尊严是否被保障？</p></div>
+  </div>
+  <div class="foot-line">看任何法律现象，不要只看它“说了什么”，还要看它<b>“约束了谁、保护了谁”</b>。</div>
+  <div class="deck-footer"><span class="dim2">SUMMARY · 思政落脚</span><span class="slide-number"></span></div>
+  <div class="notes">【01:00｜思政】最后，是我们的思政落脚。第一，反对两种极端：法律万能论，以为立法能解决一切；法律虚无论，以为法律只是统治工具。第二，练一种法治思维：看任何法律现象，先问秩序——规则是否可预期？再问限权——权力是否受约束？最后问权利——人的尊严是否被保障？</div>
+</section>
+
+<!-- ═══ 46 · 结语 ═══ -->
+<section class="slide dark-stone" data-deck-label="结语" style="padding:0">
+  <div class="cover-bg"><img src="assets/closing_bg.jpg" alt="从石碑到宪法"></div>
+  <div class="cover-scrim" style="background:linear-gradient(180deg,rgba(14,11,8,.72),rgba(14,11,8,.86))"></div>
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:1;pointer-events:none" aria-hidden="true"></div>
+  <div class="cover-content center tc" style="align-items:center;text-align:center">
+    <div class="anim-blur-in" data-anim="blur-in">
+      <p class="kicker" style="letter-spacing:.3em;color:#C9A45C">CLOSING · 结语</p>
+      <blockquote class="gold-quote" style="font-size:46px;color:#F7F1E3;margin:34px auto;max-width:22ch">
+        法律从刻在石头上，<br>到写在宪法里，<br>最后落在每个人的权利上。
+      </blockquote>
+      <p style="font-size:20px;color:#C8B898">这条线，就是人类走出丛林、走向文明的路。</p>
+      <div class="row" style="margin-top:44px;gap:14px;justify-content:center">
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">秩序</span>
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">限权</span>
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">权利</span>
+        <span class="pill" style="background:rgba(243,233,213,.12);color:#F3E9D5;border-color:rgba(243,233,213,.28)">文明</span>
+      </div>
+      <p class="serif" style="font-size:30px;color:#C9A45C;font-style:italic;margin-top:44px">谢谢聆听 · 欢迎讨论</p>
+    </div>
+  </div>
+  <div class="notes">【00:40｜结语】法律从刻在石头上，到写在宪法里，最后落在每个人的权利上。这条线，就是人类走出丛林、走向文明的路。谢谢大家，欢迎批评指正。</div>
+</section>
+
+<!-- ═══ 47 · 参考文献 ═══ -->
+<section class="slide" data-deck-label="参考文献">
+  <p class="kicker">REFERENCES · 参考文献</p>
+  <h2 class="h2">主要文献与资料来源</h2>
+  <div class="grid g2" style="margin-top:30px;gap:14px 40px;font-size:14.5px;color:var(--text-2)">
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">01</span><span>卢浮宫：《汉谟拉比法典》专题页 · louvre.fr</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">07</span><span>《人民日报》：《北京去年涉企非现场检查量占比提升至70.6%》2026-06-05</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">02</span><span>美国国家档案馆：Magna Carta（1297年确认本）· archives.gov</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">08</span><span>江苏检察网：《常熟市检察院把听证会开到家门口》2026-08-25</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">03</span><span>Legifrance：Code civil（1804）· legifrance.gouv.fr</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">09</span><span>贵州人大网：《当青铜纹路镌刻“国字号”立法基因》2025-04-25</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">04</span><span>联合国：《世界人权宣言》（1948）· un.org</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">10</span><span>中国人权网：张彭春对《世界人权宣言》的贡献 2024-03-04</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">05</span><span>国家发展改革委：《市场准入负面清单（2025年版）》答记者问</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">11</span><span>《中华人民共和国宪法》《中华人民共和国民法典》· 中国人大网</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">06</span><span>北京市市场监管局：2025年营商环境建设白皮书发布会</span></div>
+    <div class="row" style="gap:14px"><span class="dim2 mono" style="min-width:26px">12</span><span>梅因《古代法》（1861）；《韩非子·难三》；《左传·昭公六年》</span></div>
+  </div>
+  <p class="src-note" style="margin-top:26px">图片素材：卢浮宫、美国国家档案馆、全国人大官网、江苏省人大及汇报小组资料；本HTML版本中的插图为现代示意（AI生成）。部分插图为现代示意。</p>
+  <div class="deck-footer"><span class="dim2">REFERENCES</span><span class="slide-number"></span></div>
+  <div class="notes">【00:20｜文献】这是我们主要参考的文献和资料，供大家进一步查阅。</div>
+</section>
+
+<!-- ═══ 48 · 致谢 ═══ -->
+<section class="slide dark-stone center tc" data-deck-label="谢谢">
+  <div data-fx="constellation" style="--accent:#C9A45C;position:absolute;inset:0;z-index:-1;pointer-events:none" aria-hidden="true"></div>
+  <div class="anim-blur-in" data-anim="blur-in">
+    <p class="kicker" style="letter-spacing:.34em;color:#C9A45C">THANK YOU</p>
+    <h1 class="h1" style="font-size:150px;font-weight:600;color:#F7F1E3;margin:26px 0 18px">谢谢</h1>
+    <p class="lede" style="margin:0 auto;color:#C8B898">请批评指正</p>
+    <div class="divider-accent" style="margin:38px auto;width:72px"></div>
+    <p style="font-size:18px;color:#96866A;letter-spacing:.2em">秩序 · 限权 · 权利 · 文明</p>
+    <p style="font-size:15px;color:#96866A;margin-top:26px">第8组 · 小组汇报 · 2026</p>
+  </div>
+  <div class="credits-roll" aria-hidden="true">
+    <div class="credits-track">
+      <span>出品 · 第8组</span><span class="cr-d">◆</span>
+      <span>林芷洲 · 房芊桐 · 朱依依 · 粟红玲 · 曾诗兰 · 宋羽淇 · 柳胤舟</span><span class="cr-d">◆</span>
+      <span>《法，何以成人》 · 2026</span><span class="cr-d">◆</span>
+      <span>出品 · 第8组</span><span class="cr-d">◆</span>
+      <span>林芷洲 · 房芊桐 · 朱依依 · 粟红玲 · 曾诗兰 · 宋羽淇 · 柳胤舟</span><span class="cr-d">◆</span>
+      <span>《法，何以成人》 · 2026</span><span class="cr-d">◆</span>
+    </div>
+  </div>
+  <div class="notes">【00:10｜结束】谢谢聆听，欢迎讨论。</div>
+</section>
+
+</deck-stage>
+<div class="hud-hint">← → 翻页 · O 总览 · S 讲者模式 · N 备注 · T 换主题 · F 全屏</div>
+<script src="./_shared/runtime.js"></script>
+<script src="./_shared/echarts-theme-sync.js"></script>
+<script src="./_shared/animations/fx-runtime.js"></script>
+<script>
+/* 翻转卡片 */
+document.querySelectorAll('.flip').forEach(function(f){
+  f.addEventListener('click', function(){ f.classList.toggle('on'); });
+});
+/* 交互时间轴 */
+(function(){
+  var nodes = document.querySelectorAll('.itl-node');
+  if(!nodes.length) return;
+  nodes.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      nodes.forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      document.getElementById('itl-kind').textContent = (btn.dataset.k === '中国' ? '中国线索' : '世界坐标') + ' · ' + btn.dataset.y;
+      document.getElementById('itl-title').textContent = btn.dataset.t;
+      document.getElementById('itl-desc').textContent = btn.dataset.d;
+    });
+  });
+})();
+</script>
+<script>
+/* ════════ 高级感升级层 · 幕布 / 光标 / 数字滚动 / 逐字对焦 / 视差 / 章节指示 ════════ */
+(function(){
+'use strict';
+var slides = Array.prototype.slice.call(document.querySelectorAll('deck-stage > .slide'));
+if(!slides.length) return;
+var isPreview = /[?&]preview=/.test(location.search);
+var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+var curIdx = 0;
+
+/* · 1 · 开场幕布控制（预览模式直接跳过） */
+var preloader = document.getElementById('preloader');
+var plActive = !!(preloader && !isPreview);
+var pendingActivate = -1;
+if(preloader && isPreview){ preloader.parentNode.removeChild(preloader); preloader = null; }
+if(preloader){
+  var blockKeys = function(e){
+    var k = e.key;
+    if(k === 'ArrowRight' || k === 'ArrowLeft' || k === 'ArrowUp' || k === 'ArrowDown' ||
+       k === ' ' || k === '.' || k === 'PageUp' || k === 'PageDown' ||
+       k === 'Home' || k === 'End' || k === 'Enter' || k === 'Backspace'){
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  };
+  document.addEventListener('keydown', blockKeys, true);
+  setTimeout(function(){ /* 1.6s：幕布自下而上掀开 */
+    preloader.classList.add('exit');
+    plActive = false;
+    if(pendingActivate > -1){ var p = pendingActivate; pendingActivate = -1; onActivate(p); }
+  }, 1600);
+  setTimeout(function(){ /* 2.3s：彻底移除，归还交互 */
+    document.removeEventListener('keydown', blockKeys, true);
+    if(preloader && preloader.parentNode) preloader.parentNode.removeChild(preloader);
+    preloader = null;
+  }, 2300);
+}
+
+/* · 4 · 章节大标题 / 金句逐字对焦：拆字（保留 <br> 与空格，样式自动继承） */
+slides.forEach(function(sl){
+  if(!sl.classList.contains('dark-stone')) return;
+  Array.prototype.forEach.call(sl.querySelectorAll('.h1, blockquote.gold-quote'), function(el){
+    var frag = document.createDocumentFragment(), d = 0;
+    Array.prototype.slice.call(el.childNodes).forEach(function(n){
+      if(n.nodeType === 3){
+        var s = n.nodeValue;
+        for(var i = 0; i < s.length; i++){
+          var c = s.charAt(i);
+          if(/\s/.test(c)){ frag.appendChild(document.createTextNode(c)); continue; }
+          var sp = document.createElement('span');
+          sp.className = 'fw-ch';
+          sp.textContent = c;
+          sp.style.setProperty('--d', d + 'ms');
+          d += 40;
+          frag.appendChild(sp);
+        }
+      } else if(n.nodeType === 1){
+        frag.appendChild(n.cloneNode(true));
+      }
+    });
+    el.textContent = '';
+    el.appendChild(frag);
+    el.classList.add('fw');
+  });
+});
+
+/* · 3 · 发布会同款数字滚动 */
+var statsBySlide = slides.map(function(){ return []; });
+slides.forEach(function(sl, i){
+  Array.prototype.forEach.call(sl.querySelectorAll('.stat-n, [data-roll]'), function(el){
+    statsBySlide[i].push({ el: el, orig: el.innerHTML, raf: 0 });
+  });
+});
+function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+function rollStats(i){
+  var list = statsBySlide[i];
+  if(!list || !list.length) return;
+  list.forEach(function(s){
+    cancelAnimationFrame(s.raf);
+    s.el.innerHTML = s.orig; /* 重复进入：先还原再重播 */
+    var segs = [];
+    (function wrap(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(n){
+        if(n.nodeType === 3){
+          if(!/\d/.test(n.nodeValue)) return;
+          var parts = n.nodeValue.split(/(\d+(?:\.\d+)?)/);
+          if(parts.length === 1) return;
+          var frag = document.createDocumentFragment();
+          parts.forEach(function(p){
+            if(/^\d+(?:\.\d+)?$/.test(p)){
+              var sp = document.createElement('span');
+              sp.className = 'roll-seg';
+              sp.setAttribute('data-v', p);
+              sp.textContent = '0';
+              segs.push(sp);
+              frag.appendChild(sp);
+            } else if(p){
+              frag.appendChild(document.createTextNode(p));
+            }
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if(n.nodeType === 1 && n.childNodes.length && n.tagName !== 'BR'){
+          wrap(n);
+        }
+      });
+    })(s.el);
+    if(!segs.length) return;
+    var t0 = performance.now(), dur = 1000;
+    (function tick(now){
+      var t = Math.min(1, (now - t0) / dur), k = easeOutCubic(t);
+      segs.forEach(function(sp){
+        var raw = sp.getAttribute('data-v');
+        var dec = raw.indexOf('.') > -1 ? raw.split('.')[1].length : 0;
+        sp.textContent = (parseFloat(raw) * k).toFixed(dec);
+      });
+      if(t < 1) s.raf = requestAnimationFrame(tick);
+    })(t0);
+  });
+}
+
+/* · 激活钩子：幻灯片每次激活时重播（幕布期间挂起） */
+function onActivate(i){
+  if(plActive){ pendingActivate = i; return; }
+  var sl = slides[i];
+  Array.prototype.forEach.call(sl.querySelectorAll('.fw'), function(el){
+    el.classList.remove('fw-play');
+    void el.offsetWidth;
+    el.classList.add('fw-play');
+  });
+  rollStats(i);
+  document.body.classList.toggle('on-dark', sl.classList.contains('dark-stone'));
+}
+var classObs = new MutationObserver(function(muts){
+  muts.forEach(function(m){
+    if(m.attributeName !== 'class') return;
+    if(m.target.classList.contains('active')){
+      var i = slides.indexOf(m.target);
+      if(i > -1) onActivate(i);
+    }
+  });
+});
+slides.forEach(function(sl){ classObs.observe(sl, { attributes: true, attributeFilter: ['class'] }); });
+
+/* · 9 · 顶部章节指示器（观察 runtime 维护的 .slide-number data-current，双模式通用） */
+var hud = document.createElement('div');
+hud.id = 'chapter-hud';
+document.body.appendChild(hud);
+var PARTS = [
+  [2, 5, '序章 · PROLOGUE'],
+  [6, 12, 'PART 01 · 秩序的奠基者'],
+  [13, 20, 'PART 02 · 权力的约束者'],
+  [21, 28, 'PART 03 · 权利的保障者'],
+  [29, 36, 'PART 04 · 文明的推动者'],
+  [37, 45, 'PART 05 · 中国现场'],
+  [46, 48, '结语 · CLOSING']
+];
+function partOf(n){
+  for(var j = 0; j < PARTS.length; j++){
+    if(n >= PARTS[j][0] && n <= PARTS[j][1]) return PARTS[j][2];
+  }
+  return null;
+}
+function setHud(n){
+  var label = partOf(n);
+  var sl = slides[n - 1];
+  var dark = !!(sl && sl.classList.contains('dark-stone'));
+  hud.classList.toggle('on-dark', dark);
+  document.body.classList.toggle('on-dark', dark);
+  if((label || '') === (hud.dataset.cur || '')) return;
+  hud.dataset.cur = label || '';
+  hud.classList.remove('show');
+  setTimeout(function(){
+    hud.textContent = label || '';
+    if(label) hud.classList.add('show');
+  }, 260);
+}
+var numEl = document.querySelector('.slide-number');
+if(numEl){
+  new MutationObserver(function(){
+    var n = parseInt(numEl.getAttribute('data-current') || '0', 10);
+    if(!n || isNaN(n)) return;
+    curIdx = n - 1;
+    setHud(n);
+  }).observe(numEl, { attributes: true, attributeFilter: ['data-current'] });
+}
+
+/* · 2 · 双层光标 · 6 · 封面/结语视差（共用 rAF 循环） */
+var dot = null, ring = null, mx = -100, my = -100, rx = -100, ry = -100;
+if(fine && !isPreview){
+  dot = document.createElement('div'); dot.id = 'cursor-dot';
+  ring = document.createElement('div'); ring.id = 'cursor-ring';
+  document.body.appendChild(dot);
+  document.body.appendChild(ring);
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    if(dot) dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+    document.body.classList.add('cur-in');
+  }, { passive: true });
+  document.addEventListener('mouseover', function(e){
+    if(!(e.target instanceof Element) || !ring) return;
+    var hit = e.target.closest('a,button,.flip,.itl-node,.card-hover,[title],.thumb');
+    ring.classList.toggle('hov', !!hit);
+  }, { passive: true });
+  document.documentElement.addEventListener('mouseleave', function(){
+    document.body.classList.remove('cur-in');
+  });
+}
+var pImgs = [];
+[0, 45].forEach(function(i){
+  if(slides[i]){
+    var img = slides[i].querySelector('.cover-bg img');
+    if(img) pImgs.push(img);
+  }
+});
+var ptx = 0, pty = 0, ppx = 0, ppy = 0;
+if(fine && !reduced && !isPreview && pImgs.length){
+  window.addEventListener('mousemove', function(e){
+    if(curIdx === 0 || curIdx === 45){
+      ptx = -((e.clientX / window.innerWidth) * 2 - 1) * 11;
+      pty = -((e.clientY / window.innerHeight) * 2 - 1) * 8;
+    } else { ptx = 0; pty = 0; }
+  }, { passive: true });
+}
+if(fine && !isPreview){
+  (function loop(){
+    if(ring){
+      rx += (mx - rx) * 0.16;
+      ry += (my - ry) * 0.16;
+      ring.style.transform = 'translate(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px)';
+    }
+    if(pImgs.length && !reduced){
+      ppx += (ptx - ppx) * 0.07;
+      ppy += (pty - ppy) * 0.07;
+      var tf = 'translate3d(' + ppx.toFixed(2) + 'px,' + ppy.toFixed(2) + 'px,0) scale(1.06)';
+      pImgs.forEach(function(img){ img.style.transform = tf; });
+    }
+    requestAnimationFrame(loop);
+  })();
+}
+})();
+
+</script>
+<script>
+/* ════════ 自检审计 · 仅当 URL 含 ?audit=1 时激活 ════════
+   遍历全部 48 页（inactive 页仅 opacity:0 仍参与布局），用相对坐标检测：
+   bottom 超出 slide 底部 / right 超出右缘 / 与 .deck-footer 重叠 > 2px。
+   结果：window.__auditResults + console.log + 违规元素红色 outline。 */
+(function(){
+  if(!/[?&]audit=1/.test(location.search)) return;
+  function runAudit(){
+    var slides = document.querySelectorAll('deck-stage > .slide');
+    var results = [];
+    Array.prototype.forEach.call(slides, function(sl, si){
+      var sr = sl.getBoundingClientRect();
+      var footer = sl.querySelector('.deck-footer');
+      var fr = footer ? footer.getBoundingClientRect() : null;
+      var els = sl.querySelectorAll('p,h1,h2,h3,h4,span,li,blockquote,div,b');
+      Array.prototype.forEach.call(els, function(el){
+        if(footer && footer.contains(el)) return;
+        if(el.closest('.credits-roll')) return; /* 片尾字幕为刻意的遮罩滚动溢出 */
+        var cls = el.classList;
+        if(cls.contains('fw-ch') || cls.contains('roll-seg') || cls.contains('notes')) return;
+        var r = el.getBoundingClientRect();
+        if(r.width < 1 || r.height < 1) return;
+        var hasText = Array.prototype.some.call(el.childNodes, function(n){
+          return n.nodeType === 3 && n.nodeValue.trim().length > 0;
+        });
+        if(!hasText) return;
+        var relB = r.bottom - sr.bottom;
+        var relR = r.right - sr.right;
+        var issues = [];
+        if(relB > 2) issues.push('bottom +' + Math.round(relB) + 'px');
+        if(relR > 2) issues.push('right +' + Math.round(relR) + 'px');
+        if(fr){
+          var vInt = Math.min(r.bottom, fr.bottom) - Math.max(r.top, fr.top);
+          var hInt = Math.min(r.right, fr.right) - Math.max(r.left, fr.left);
+          if(vInt > 2 && hInt > 2) issues.push('footer +' + Math.round(vInt) + 'px');
+        }
+        if(issues.length){
+          el.style.outline = '2px solid red';
+          el.style.outlineOffset = '2px';
+          results.push({
+            slide: si + 1,
+            label: sl.getAttribute('data-deck-label') || '',
+            tag: el.tagName,
+            text: (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 20),
+            issues: issues
+          });
+        }
+      });
+    });
+    window.__auditResults = results;
+    try{
+      console.log('__AUDIT_RESULTS__ ' + JSON.stringify(results, null, 1));
+      document.title = '__AUDIT_' + results.length + '__ ' + JSON.stringify(results);
+    }catch(e){}
+    return results;
+  }
+  window.__runAudit = runAudit;
+  window.addEventListener('load', function(){ setTimeout(runAudit, 500); });
+})();
+</script>
+</body>
+</html>
